@@ -49,9 +49,23 @@ export const messages = pgTable("messages", {
     .references(() => users.id),
   content: varchar("content", { length: 1000 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  sentAt: timestamp("sent_at"),
-  deliveredAt: timestamp("delivered_at"),
-  readAt: timestamp("read_at"),
+});
+
+export const messageStatusReceipts = pgTable("message_status_receipts", {
+  id: serial("id").primaryKey(),
+  messageId: integer("message_id")
+    .notNull()
+    .references(() => messages.id),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  status: varchar("status", { length: 50 })
+    .$type<"sent" | "delivered" | "read">()
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 // Calls table
