@@ -65,6 +65,15 @@ export function getUser(req: Request, param?: { isRequired: boolean }) {
   if (req.user) {
     return req.user;
   }
+
+  // try to fetch again incase of middleware order issues
+  const nUser = getUserFromJwt(req.headers);
+
+  if (nUser && nUser !== "no-token" && nUser !== "invalid-token") {
+    req.user = nUser;
+    return nUser;
+  }
+
   if (param?.isRequired ?? true) {
     throw apiError(401, "Authentication required");
   }

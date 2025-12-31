@@ -11,6 +11,7 @@ dotenv.config();
 const app = express();
 const server = createServer(app);
 import chatRoutes from "./routes/chats";
+import authRoutes from "./routes/auth";
 import { globalErrorHandler } from "./middleware/global-error-handle";
 
 const io = new Server(server, {
@@ -37,6 +38,7 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
 
 // 404 handler
