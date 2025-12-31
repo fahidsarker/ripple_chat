@@ -3,10 +3,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import helmet from "helmet";
-import dotenv from "dotenv";
-
-// Load environment variables
-dotenv.config();
+import { env } from "./env";
 
 const app = express();
 const server = createServer(app);
@@ -21,7 +18,7 @@ const io = new Server(server, {
   },
 });
 
-const PORT = process.env.SERVER_PORT || 8080;
+const PORT = env.SERVER_PORT || 8080;
 
 // Middleware
 app.use(helmet());

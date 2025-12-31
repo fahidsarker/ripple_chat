@@ -2,8 +2,9 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { Request, Response, NextFunction } from "express";
 import { apiError } from "../core/api-error";
+import { env } from "../env";
 
-const JWT_SECRET = process.env.JWT_SECRET ?? "your_jwt_secret_key";
+const JWT_SECRET = env.JWT_SECRET ?? "your_jwt_secret_key";
 const SALT_ROUNDS = 10;
 
 export interface JWTPayload {
