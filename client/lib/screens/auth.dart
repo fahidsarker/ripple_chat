@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import '../core/providers/theme_provider.dart';
 import '../core/theme/theme.dart';
 
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+class AuthScreen extends StatelessWidget {
+  const AuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -134,12 +134,22 @@ class WelcomeScreen extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 // Navigate to create account
-                                context.go('/connect-server');
+                                context.go('/registration');
                               },
-                              child: const Text('Get Started'),
+                              child: const Text('Create Account'),
                             ),
                           ),
-
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                // Navigate to login
+                                context.go('/login');
+                              },
+                              child: const Text('Log In'),
+                            ),
+                          ),
                           const SizedBox(height: 16),
                           Text.rich(
                             TextSpan(

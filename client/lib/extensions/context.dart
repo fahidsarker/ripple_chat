@@ -1,7 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:ripple_client/core/providers/theme_provider.dart';
 
 extension CtxExt on BuildContext {
   ThemeProvider get tp => watch<ThemeProvider>();
+  // void showSnackBar(String message) {
+  //   DelightToastBar(
+  //     autoDismiss: true,
+
+  //     builder: (context) => ToastCard(
+  //       color: context.c.btnPrimary,
+  //       leading: Icon(
+  //         FontAwesomeIcons.solidBell,
+  //         size: 28,
+  //         color: context.c.onBtnPrimary,
+  //       ),
+  //       title: Text(
+  //         message,
+  //         style: TextStyle(
+  //           fontWeight: FontWeight.w700,
+  //           fontSize: 14,
+  //           color: context.c.onBtnPrimary,
+  //         ),
+  //       ),
+  //     ),
+  //   ).show(this);
+  // }
+
+  bool get isWide => MediaQuery.of(this).size.width > 850;
+  bool get isUltraWide => MediaQuery.of(this).size.width > 1250;
+
+  T? ifRoute<T>(String route, T widget) {
+    if (!route.startsWith('/')) {
+      route = '/$route';
+    }
+    return GoRouterState.of(this).matchedLocation == route ? widget : null;
+  }
+
+  GoRouterState get router => GoRouterState.of(this);
 }
