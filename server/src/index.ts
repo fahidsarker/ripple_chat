@@ -10,6 +10,8 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
+import chatRoutes from "./routes/chats";
+import { globalErrorHandler } from "./middleware/global-error-handle";
 
 const io = new Server(server, {
   cors: {
@@ -35,23 +37,15 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.use("/api/chats", chatRoutes);
+
 // 404 handler
 app.use("*", (req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 
 // Error handling middleware
-app.use(
-  (
-    err: any,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    console.error("Unhandled error:", err);
-    res.status(500).json({ error: "Internal server error" });
-  }
-);
+app.use(globalErrorHandler);
 
 // Start server
 server.listen(PORT, () => {
