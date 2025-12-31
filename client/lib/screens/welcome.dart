@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:ripple_client/preferences.dart';
 import '../core/providers/theme_provider.dart';
 import '../core/theme/theme.dart';
 
@@ -133,8 +134,11 @@ class WelcomeScreen extends StatelessWidget {
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () {
-                                // Navigate to create account
-                                context.go('/connect-server');
+                                if (serverUriPref.value == null) {
+                                  context.go('/connect-server');
+                                } else {
+                                  context.go('/auth');
+                                }
                               },
                               child: const Text('Get Started'),
                             ),

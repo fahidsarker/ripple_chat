@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:ripple_client/router.dart';
+import 'package:solid_shared_pref/solid_shared_pref.dart';
 import 'core/providers/theme_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'package:ripple_client/core/url_strategy_stub.dart'
@@ -12,6 +13,7 @@ void main() async {
   if (kIsWeb) {
     setUrlStrategy(PathUrlStrategy());
   }
+  initSolidSharedPreferences();
   WidgetsFlutterBinding.ensureInitialized();
   runApp(ProviderScope(child: const MyApp()));
 }
