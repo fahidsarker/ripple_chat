@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
+import 'package:ripple_client/extensions/color.dart';
 import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/core/theme/app_typography.dart';
+import 'package:ripple_client/widgets/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,139 +12,113 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _isLoading = false;
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: context.isWide ? _buildWideLayout() : _buildMobileLayout(),
-    );
-  }
-
-  Widget _buildWideLayout() {
-    return Row(
-      children: [
-        // Left Side: Visual / Brand
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF111418),
-              image: const DecorationImage(
-                image: NetworkImage(
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuA_mRgWyrKHn6R5ytFyG4k-gqblF_CYEX0g8zwFvZRaHJJ5Vh0fJkJeaqHDWXIcDyzE9QA2QpLFhxgLNELoFD8c9b9LabAL4Twsg7k_51RUj5ipm3hTe13Kr_EJiDCO5bTcO_kuvFyy7cTfGINyMFqhQ7Q6dmMSkSRS3tW3Rp5fNJp9-9cidUdG-Mx-p-8txhbngjau9JX-Pt5Of9h4OskDIqBbV0w_JivSysk-_Di4ooeyOxZfvuYCWPqgX7_DUKxuZ3WFnuFI0D4',
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
+      body: Row(
+        children: [
+          if (context.isWide) const Expanded(child: RippleChatLoginHeroArea()),
+          Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    context.c.primary.withOpacity(0.1),
-                    const Color(0xFF101922).withOpacity(0.5),
-                    const Color(0xFF101922).withOpacity(0.9),
-                  ],
-                ),
-              ),
-              padding: const EdgeInsets.all(64),
+              color: context.c.background,
+              padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 48),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Logo Icon
-                  Container(
-                    height: 56,
-                    width: 56,
-                    decoration: BoxDecoration(
-                      color: context.c.primary,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.c.primary.withOpacity(0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
+                  if (!context.isWide) ...[
+                    Container(
+                      height: 48,
+                      width: 48,
+                      decoration: BoxDecoration(
+                        color: context.c.primary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.waves,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.waves,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Headline
-                  Text(
-                    'Connect instantly.\nChat seamlessly.',
-                    style: AppTypography.displayMedium.copyWith(
-                      color: Colors.white,
-                      height: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Description
-                  Text(
-                    'Experience the next generation of communication with Ripple Chat. Secure, fast, and built for connection.',
-                    style: AppTypography.bodyLarge.copyWith(
-                      color: const Color(0xFF93AEBF),
+                    const SizedBox(height: 32),
+                  ],
+                  Expanded(
+                    child: Center(
+                      child: SingleChildScrollView(child: LoginForm()),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-        ),
-        // Right Side: Login Form
-        Expanded(
-          child: Container(
-            color: context.c.background,
-            padding: const EdgeInsets.symmetric(horizontal: 96, vertical: 48),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 400),
-                child: _buildLoginForm(),
-              ),
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+}
 
-  Widget _buildMobileLayout() {
+class RippleChatLoginHeroArea extends StatelessWidget {
+  const RippleChatLoginHeroArea({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      color: context.c.background,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
-      child: SafeArea(
+      decoration: BoxDecoration(
+        color: const Color(0xFF111418),
+        image: const DecorationImage(
+          image: NetworkImage(
+            'https://lh3.googleusercontent.com/aida-public/AB6AXuA_mRgWyrKHn6R5ytFyG4k-gqblF_CYEX0g8zwFvZRaHJJ5Vh0fJkJeaqHDWXIcDyzE9QA2QpLFhxgLNELoFD8c9b9LabAL4Twsg7k_51RUj5ipm3hTe13Kr_EJiDCO5bTcO_kuvFyy7cTfGINyMFqhQ7Q6dmMSkSRS3tW3Rp5fNJp9-9cidUdG-Mx-p-8txhbngjau9JX-Pt5Of9h4OskDIqBbV0w_JivSysk-_Di4ooeyOxZfvuYCWPqgX7_DUKxuZ3WFnuFI0D4',
+          ),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              context.c.primary.wOpacity(0.1),
+              const Color(0xFF101922).wOpacity(0.5),
+              const Color(0xFF101922).wOpacity(0.9),
+            ],
+          ),
+        ),
+        padding: const EdgeInsets.all(64),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Mobile Logo
+            // Logo Icon
             Container(
-              height: 48,
-              width: 48,
+              height: 56,
+              width: 56,
               decoration: BoxDecoration(
                 color: context.c.primary,
                 borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: context.c.primary.wOpacity(0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
-              child: const Icon(Icons.waves, color: Colors.white, size: 20),
+              child: const Icon(Icons.waves, color: Colors.white, size: 24),
             ),
-            const SizedBox(height: 32),
-            Expanded(
-              child: Center(
-                child: SingleChildScrollView(child: _buildLoginForm()),
+            const SizedBox(height: 24),
+            // Headline
+            Text(
+              'Connect instantly.\nChat seamlessly.',
+              style: AppTypography.displayMedium.copyWith(
+                color: Colors.white,
+                height: 1.2,
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Description
+            Text(
+              'Experience the next generation of communication with Ripple Chat. Secure, fast, and built for connection.',
+              style: AppTypography.bodyLarge.copyWith(
+                color: const Color(0xFF93AEBF),
               ),
             ),
           ],
@@ -152,275 +126,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  Widget _buildLoginForm() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Headline
-          Column(
-            crossAxisAlignment: context.isWide
-                ? CrossAxisAlignment.start
-                : CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Welcome back to Ripple',
-                style: AppTypography.displaySmall.copyWith(
-                  color: context.c.textPrimary,
-                ),
-                textAlign: context.isWide ? TextAlign.start : TextAlign.center,
-              ),
-
-              const SizedBox(height: 8),
-              Text(
-                'Please enter your details to sign in.',
-                style: AppTypography.bodyLarge.copyWith(
-                  color: context.c.textSecondary,
-                ),
-                textAlign: context.isWide ? TextAlign.start : TextAlign.center,
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-
-          // Email Field
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Email Address',
-                style: AppTypography.labelLarge.copyWith(
-                  color: context.c.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'name@example.com',
-                  hintStyle: AppTypography.bodyLarge.copyWith(
-                    color: context.c.textSecondary,
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(
-                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                  ).hasMatch(value)) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // Password Field
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Password',
-                style: AppTypography.labelLarge.copyWith(
-                  color: context.c.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  hintText: 'Enter your password',
-                  hintStyle: AppTypography.bodyLarge.copyWith(
-                    color: context.c.textSecondary,
-                  ),
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: context.c.textSecondary,
-                    ),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // Forgot Password
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                // TODO: Handle forgot password
-                context.showSnackBar('Forgot password feature coming soon!');
-              },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              child: Text(
-                'Forgot password?',
-                style: AppTypography.labelLarge.copyWith(
-                  color: context.c.primary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Login Button
-          ElevatedButton(
-            onPressed: _isLoading ? null : _handleLogin,
-            child: _isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : const Text('Log In'),
-          ),
-          const SizedBox(height: 32),
-
-          // Divider
-          Row(
-            children: [
-              Expanded(child: Divider(color: context.c.border, height: 1)),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'You are logging into',
-                  style: AppTypography.labelLarge.copyWith(
-                    color: context.c.textSecondary,
-                  ),
-                ),
-              ),
-              Expanded(child: Divider(color: context.c.border, height: 1)),
-            ],
-          ),
-
-          // Social Login Buttons
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'demo.ripplechat.app',
-                style: AppTypography.buttonLarge.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: context.c.success,
-                ),
-              ),
-              const SizedBox(width: 4),
-              TextButton(
-                onPressed: () {
-                  context.go('/connect-server');
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.edit, size: 16, color: context.c.primaryLight),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Update',
-                      style: AppTypography.buttonMedium.copyWith(
-                        color: context.c.primaryLight,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _handleLogin() async {
-    if (_formKey.currentState?.validate() != true) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-
-      context.showSnackBar('Login functionality coming soon!');
-    }
-  }
-}
-
-// Custom painter for Google icon
-class GoogleIconPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..style = PaintingStyle.fill;
-
-    // This is a simplified Google icon - in production, you'd want to use an SVG
-    paint.color = const Color(0xFF4285F4);
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width * 0.4, size.height * 0.4),
-      paint,
-    );
-
-    paint.color = const Color(0xFFDB4437);
-    canvas.drawRect(
-      Rect.fromLTWH(size.width * 0.6, 0, size.width * 0.4, size.height * 0.4),
-      paint,
-    );
-
-    paint.color = const Color(0xFFFF0F00);
-    canvas.drawRect(
-      Rect.fromLTWH(0, size.height * 0.6, size.width * 0.4, size.height * 0.4),
-      paint,
-    );
-
-    paint.color = const Color(0xFF0F9D58);
-    canvas.drawRect(
-      Rect.fromLTWH(
-        size.width * 0.6,
-        size.height * 0.6,
-        size.width * 0.4,
-        size.height * 0.4,
-      ),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

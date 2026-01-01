@@ -43,6 +43,7 @@ dependencies:
   solid_shared_pref: ^1.0.0
   dio: ^5.9.0
   delightful_toast: ^1.1.0
+  resultx: ^1.0.2
 
 dev_dependencies:
   flutter_test:
