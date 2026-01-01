@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:ripple_client/screens/auth.dart';
 import 'package:ripple_client/screens/auth/login-screen.dart';
 import 'package:ripple_client/screens/auth/registration-screen.dart';
 import 'package:ripple_client/screens/init/connect-server.dart';
@@ -19,7 +18,6 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: rootNavigatorKey,
     routes: [
       GoRoute(path: '/welcome', builder: (_, __) => WelcomeScreen()),
-      GoRoute(path: '/auth', builder: (_, __) => AuthScreen()),
       GoRoute(path: '/registration', builder: (_, __) => RegistrationScreen()),
       GoRoute(path: '/login', builder: (_, __) => LoginScreen()),
       GoRoute(

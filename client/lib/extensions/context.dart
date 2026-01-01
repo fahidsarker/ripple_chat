@@ -1,32 +1,40 @@
+import 'package:delightful_toast/delight_toast.dart';
+import 'package:delightful_toast/toast/components/toast_card.dart';
+import 'package:delightful_toast/toast/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:ripple_client/core/providers/theme_provider.dart';
+import 'package:ripple_client/core/theme/app_colors.dart';
 
 extension CtxExt on BuildContext {
   ThemeProvider get tp => watch<ThemeProvider>();
-  // void showSnackBar(String message) {
-  //   DelightToastBar(
-  //     autoDismiss: true,
-
-  //     builder: (context) => ToastCard(
-  //       color: context.c.btnPrimary,
-  //       leading: Icon(
-  //         FontAwesomeIcons.solidBell,
-  //         size: 28,
-  //         color: context.c.onBtnPrimary,
-  //       ),
-  //       title: Text(
-  //         message,
-  //         style: TextStyle(
-  //           fontWeight: FontWeight.w700,
-  //           fontSize: 14,
-  //           color: context.c.onBtnPrimary,
-  //         ),
-  //       ),
-  //     ),
-  //   ).show(this);
-  // }
+  void showSnackBar(String message) {
+    DelightToastBar(
+      autoDismiss: true,
+      position: DelightSnackbarPosition.top,
+      builder: (context) => SizedBox(
+        width: 20,
+        child: ToastCard(
+          color: context.c.primary,
+          leading: Icon(
+            // FontAwesomeIcons.solidBell,
+            Icons.notifications,
+            size: 28,
+            color: context.c.onPrimary,
+          ),
+          title: Text(
+            message,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+              color: context.c.onPrimary,
+            ),
+          ),
+        ),
+      ),
+    ).show(this);
+  }
 
   bool get isWide => MediaQuery.of(this).size.width > 850;
   bool get isUltraWide => MediaQuery.of(this).size.width > 1250;
@@ -39,4 +47,5 @@ extension CtxExt on BuildContext {
   }
 
   GoRouterState get router => GoRouterState.of(this);
+  AppColors get c => tp.colors;
 }

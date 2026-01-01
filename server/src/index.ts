@@ -26,12 +26,28 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  // log incoming requests
+  console.log(`${req.method}\t${req.url}`);
+  next();
+});
+
 // Health check endpoint
 app.get("/health", (req, res) => {
   res.json({
     status: "ok",
     timestamp: new Date().toISOString(),
-    hello: "world",
+  });
+});
+
+app.get("/ping", (req, res) => {
+  res.json({
+    status: "ok",
+    pong: true,
+    timestamp: new Date().toISOString(),
+    apiVersion: "1.0.0",
+    allowCalls: true,
+    allowReg: true,
   });
 });
 

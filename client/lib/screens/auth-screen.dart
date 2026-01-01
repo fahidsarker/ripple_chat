@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/core/theme/app_typography.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -173,7 +172,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 textAlign: context.isWide ? TextAlign.start : TextAlign.center,
               ),
-
               const SizedBox(height: 8),
               Text(
                 'Please enter your details to sign in.',
@@ -316,7 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'You are logging into',
+                  'Or continue with',
                   style: AppTypography.labelLarge.copyWith(
                     color: context.c.textSecondary,
                   ),
@@ -325,43 +323,108 @@ class _LoginScreenState extends State<LoginScreen> {
               Expanded(child: Divider(color: context.c.border, height: 1)),
             ],
           ),
+          const SizedBox(height: 24),
 
           // Social Login Buttons
-          const SizedBox(height: 8),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'demo.ripplechat.app',
-                style: AppTypography.buttonLarge.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: context.c.success,
+              Expanded(
+                child: _buildSocialButton(
+                  label: 'Google',
+                  icon: _buildGoogleIcon(),
+                  onPressed: () {
+                    // TODO: Handle Google login
+                    context.showSnackBar('Google login coming soon!');
+                  },
                 ),
               ),
-              const SizedBox(width: 4),
-              TextButton(
-                onPressed: () {
-                  context.go('/connect-server');
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.edit, size: 16, color: context.c.primaryLight),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Update',
-                      style: AppTypography.buttonMedium.copyWith(
-                        color: context.c.primaryLight,
-                      ),
-                    ),
-                  ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildSocialButton(
+                  label: 'Apple',
+                  icon: _buildAppleIcon(context),
+                  onPressed: () {
+                    // TODO: Handle Apple login
+                    context.showSnackBar('Apple login coming soon!');
+                  },
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 32),
+
+          // Sign Up Link
+          Center(
+            child: RichText(
+              text: TextSpan(
+                style: AppTypography.bodyLarge.copyWith(
+                  color: context.c.textSecondary,
+                ),
+                children: [
+                  const TextSpan(text: "Don't have an account? "),
+                  WidgetSpan(
+                    child: GestureDetector(
+                      onTap: () {
+                        // TODO: Navigate to sign up
+                        context.showSnackBar('Sign up feature coming soon!');
+                      },
+                      child: Text(
+                        'Sign up',
+                        style: AppTypography.bodyLarge.copyWith(
+                          color: context.c.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  Widget _buildSocialButton({
+    required String label,
+    required Widget icon,
+    required VoidCallback onPressed,
+  }) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: context.c.border),
+        backgroundColor: context.c.surface,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          icon,
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: AppTypography.labelLarge.copyWith(
+              color: context.c.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGoogleIcon() {
+    return SizedBox(
+      width: 20,
+      height: 20,
+      child: CustomPaint(painter: GoogleIconPainter()),
+    );
+  }
+
+  Widget _buildAppleIcon(BuildContext context) {
+    return Icon(Icons.apple, size: 20, color: context.c.textPrimary);
   }
 
   void _handleLogin() async {
@@ -379,6 +442,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = false;
       });
 
+      // TODO: Handle actual login logic
       context.showSnackBar('Login functionality coming soon!');
     }
   }

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:ripple_client/preferences.dart';
-import '../core/providers/theme_provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:ripple_client/extensions/context.dart';
+import 'package:ripple_client/providers/api_provider.dart';
 import '../core/theme/theme.dart';
+import 'package:ripple_client/extensions/color.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeProvider = context.tp;
     final colors = themeProvider.colors;
 
     return Scaffold(
@@ -22,7 +23,7 @@ class WelcomeScreen extends StatelessWidget {
             colors: [
               colors.background,
               themeProvider.isDarkMode
-                  ? colors.surface.withOpacity(0.8)
+                  ? colors.surface.wOpacity(0.8)
                   : colors.surface,
             ],
           ),
@@ -49,8 +50,8 @@ class WelcomeScreen extends StatelessWidget {
                               shape: BoxShape.circle,
                               gradient: RadialGradient(
                                 colors: [
-                                  colors.primary.withOpacity(0.1),
-                                  colors.primary.withOpacity(0.05),
+                                  colors.primary.wOpacity(0.1),
+                                  colors.primary.wOpacity(0.05),
                                   Colors.transparent,
                                 ],
                               ),
@@ -61,9 +62,9 @@ class WelcomeScreen extends StatelessWidget {
                                 height: 120,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: colors.primary.withOpacity(0.1),
+                                  color: colors.primary.wOpacity(0.1),
                                   border: Border.all(
-                                    color: colors.primary.withOpacity(0.3),
+                                    color: colors.primary.wOpacity(0.3),
                                     width: 2,
                                   ),
                                 ),
@@ -134,10 +135,10 @@ class WelcomeScreen extends StatelessWidget {
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () {
-                                if (serverUriPref.value == null) {
+                                if (ref.read(baseApiRouteProvider) == null) {
                                   context.go('/connect-server');
                                 } else {
-                                  context.go('/auth');
+                                  context.go('/login');
                                 }
                               },
                               child: const Text('Get Started'),

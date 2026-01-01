@@ -1,32 +1,50 @@
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:ripple_client/extensions/color.dart';
+import 'package:ripple_client/extensions/context.dart';
+import 'package:ripple_client/providers/api_provider.dart';
 
-// class ConnectServerScreen extends ConsumerWidget {
-//   const ConnectServerScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return Scaffold();
-//   }
-// }
-class ConnectServerScreen extends StatefulWidget {
+class ConnectServerScreen extends HookConsumerWidget {
   const ConnectServerScreen({super.key});
 
-  @override
-  State<ConnectServerScreen> createState() => _ConnectPageState();
-}
+  Future<bool> verifyServerUrl(BuildContext context, String urlStr) async {
+    final url = Uri.tryParse(urlStr.trim());
 
-class _ConnectPageState extends State<ConnectServerScreen> {
-  bool useProxy = false;
+    if (url == null) {
+      context.showSnackBar('Please enter a valid URL.');
+      return false;
+    }
+
+    try {
+      final dio = Dio();
+      final res = await dio.getUri(url.replace(path: '/ping'));
+
+      if (!context.mounted) {
+        return false;
+      }
+      if (res.statusCode == 200) {
+        final data = res.data;
+        if (data is Map<String, dynamic> && data['pong'] == true) {
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = context.tp.isDarkMode;
+    final pedningReq = useState(false);
+    final textController = useTextEditingController();
 
     return Scaffold(
       body: Stack(
@@ -39,7 +57,7 @@ class _ConnectPageState extends State<ConnectServerScreen> {
               width: 350,
               height: 350,
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.20),
+                color: context.tp.colors.primary.wOpacity(0.20),
                 borderRadius: BorderRadius.circular(300),
               ),
               child: BackdropFilter(
@@ -148,6 +166,8 @@ class _ConnectPageState extends State<ConnectServerScreen> {
 
                                 /// Input field
                                 TextField(
+                                  controller: textController,
+                                  readOnly: pedningReq.value,
                                   decoration: InputDecoration(
                                     labelText: "Server URL",
                                     prefixIcon: const Icon(Icons.link),
@@ -165,12 +185,38 @@ class _ConnectPageState extends State<ConnectServerScreen> {
                                   width: double.infinity,
                                   height: 48,
                                   child: FilledButton(
-                                    onPressed: () {},
-                                    child: const Row(
+                                    onPressed: () async {
+                                      if (pedningReq.value) return;
+                                      pedningReq.value = true;
+                                      final urlTxt = textController.text;
+                                      final isValid = await verifyServerUrl(
+                                        context,
+                                        urlTxt,
+                                      );
+                                      if (!context.mounted) {
+                                        return;
+                                      }
+                                      if (isValid) {
+                                        ref
+                                            .read(baseApiRouteProvider.notifier)
+                                            .set(urlTxt);
+                                        context.go('/login');
+                                      } else {
+                                        context.showSnackBar(
+                                          'Failed to connect to server. Please check the URL and try again.',
+                                        );
+                                      }
+                                      pedningReq.value = false;
+                                    },
+                                    child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Text("Connect"),
+                                        Text(
+                                          pedningReq.value
+                                              ? "Connecting..."
+                                              : "Connect",
+                                        ),
                                         SizedBox(width: 8),
                                         Icon(Icons.arrow_forward, size: 18),
                                       ],
