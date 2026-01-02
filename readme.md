@@ -1,37 +1,72 @@
-# ripple_chat
+# Ripple Chat
 
-A real-time, opinionated chat application built with NodeJS and Flutter.
+<div align="center">
+  <img src="ui/logo.png" alt="Ripple Chat Logo" width="100">
+  <br><br>
+  <strong>A modern real-time chat application</strong>
+  <br>
+  <em>Built with Node.js and Flutter</em>
+</div>
 
-The goal is to make it easy to deploy a chat application with a modern UI and real-time capabilities.
+## Overview
+
+**Ripple Chat** is a streamlined, real-time messaging application designed for simplicity and ease of deployment. Built with modern technologies, it offers a clean, responsive interface across mobile and desktop platforms while maintaining the essential features needed for effective communication.
+
+> **⚠️ Development Status:** This project is currently in VERY EARLY STAGE OF active development. While core features are being implemented, the application is not yet ready for production use.
+
+## Why Ripple Chat?
+
+Ripple Chat addresses the need for a straightforward messaging solution without the complexity of enterprise-grade protocols. While platforms like Matrix offer extensive federation and bridging capabilities, Ripple Chat focuses on core messaging and call functionality with simple and straight forward self-hosting solution. **The end goal is to provide a reliable, easy-to-use chat application that can be quickly deployed for personal or small team use.**
 
 ## Features
 
-- User authentication and profile management
-- Real-time messaging with WebSockets
-- Group chats and direct messages
-- Media sharing (images, videos, files)
-- Push notifications
-- Responsive design for mobile and desktop
-- Audio and video calls (via livekit integration)
-- End-to-end encryption for secure communication
+### Current
+
+- ✅ User authentication
+
+### Planned
+
+- 🔄 Profile management
+- 🔄 Group chats and direct messages
+- 🔄 Media sharing (images, videos, files)
+- 🔄 Real-time messaging with WebSockets
+- 🔄 Responsive design for mobile and desktop
+- 🔄 Push notifications
+- 🔄 Audio and video calls (via LiveKit integration)
+- 🔄 End-to-end encryption for secure communication
 
 ## Architecture
 
-The application is divided into two main components:
+Ripple Chat follows a modern client-server architecture:
 
-1. **Backend**: Built with NodeJS, it handles user authentication, message storage, and real-time communication using WebSockets.
-2. **Frontend**: Built with Flutter, it provides a cross-platform user interface for both mobile and desktop devices.
+**Backend (Node.js)**
 
-## Getting Started
+- RESTful API for user management and message handling
+- WebSocket connections for real-time communication
+- PostgreSQL database for data persistence
+- Optional Redis integration for caching and session management
 
-### Prerequisites
+**Frontend (Flutter)**
 
-- NodeJS (v14 or higher)
-- Flutter SDK
-- A PostgreSQL database
-- Livekit server for audio/video calls (Optional)
-- Redis server for caching (Optional)
+- Cross-platform UI supporting iOS, Android, Web, and Desktop
+- Material Design components for consistent user experience
+- Real-time message synchronization
+- Responsive layouts optimized for different screen sizes
 
-### Installation
+## Prerequisites
 
-Coming soon...
+Before setting up Ripple Chat, ensure you have the following installed:
+
+- **Node.js** (v18 or higher)
+- **Flutter SDK** (latest stable version)
+- **PostgreSQL** database
+- **Redis** server (optional, for caching)
+- **LiveKit** server (optional, for audio/video calls)
+
+## Installation
+
+Detailed installation instructions will be provided as the project approaches its first stable release. For now, the codebase serves as a reference implementation.
+
+## Contributing
+
+We welcome contributions to Ripple Chat! Please feel free to submit issues, feature requests, or pull requests to help improve the project.

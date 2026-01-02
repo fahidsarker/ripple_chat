@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/color.dart';
 import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/core/theme/app_typography.dart';
+import 'package:ripple_client/extensions/results.dart';
+import 'package:ripple_client/extensions/riverpod.dart';
+import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/widgets/signup_form.dart';
 
 class RegistrationScreen extends ConsumerWidget {
@@ -55,7 +59,30 @@ class RegistrationScreen extends ConsumerWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: SignupForm(),
+                    child: SignupForm(
+                      onRegister: (name, email, password) async {
+                        final res = await ref.api
+                            .post<Map<String, dynamic>>(
+                              API_PATH_REGISTER,
+                              body: {
+                                'email': email,
+                                'password': password,
+                                'name': name,
+                              },
+                            )
+                            .resolveWithUI(context);
+
+                        return res.when(
+                          success: (e) {
+                            ref
+                                .read(authTokenProvider.notifier)
+                                .set(e['token'] as String);
+                            return e.containsKey('token');
+                          },
+                          error: (e) => false,
+                        );
+                      },
+                    ),
                   ),
                   Container(
                     height: 4,

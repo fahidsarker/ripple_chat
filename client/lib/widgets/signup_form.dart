@@ -5,7 +5,9 @@ import 'package:ripple_client/core/theme/app_typography.dart';
 import 'package:ripple_client/extensions/context.dart';
 
 class SignupForm extends StatefulWidget {
-  const SignupForm({super.key});
+  final Future<bool> Function(String name, String email, String password)?
+  onRegister;
+  const SignupForm({super.key, this.onRegister});
 
   @override
   State<SignupForm> createState() => _SignupFormState();
@@ -30,16 +32,22 @@ class _SignupFormState extends State<SignupForm> {
     super.dispose();
   }
 
-  void _handleRegistration() {
+  void _handleRegistration() async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Handle registration logic here
       HapticFeedback.lightImpact();
-      context.showSnackBar('Registration successful!');
-
-      // TODO: Implement actual registration logic
-      print('Name: ${_nameController.text}');
-      print('Email: ${_emailController.text}');
-      print('Password: ${_passwordController.text}');
+      if (widget.onRegister != null) {
+        final res = await widget.onRegister!(
+          _nameController.text.trim(),
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
+        if (!mounted) return;
+        if (!res) {
+          context.showSnackBar('Registration failed. Please try again.');
+          return;
+        }
+        context.showSnackBar('Registration successful!');
+      }
     } else {
       HapticFeedback.mediumImpact();
     }

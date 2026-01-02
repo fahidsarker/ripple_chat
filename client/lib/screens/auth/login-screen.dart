@@ -93,9 +93,7 @@ class RippleChatLoginHeroArea extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF111418),
         image: const DecorationImage(
-          image: NetworkImage(
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuA_mRgWyrKHn6R5ytFyG4k-gqblF_CYEX0g8zwFvZRaHJJ5Vh0fJkJeaqHDWXIcDyzE9QA2QpLFhxgLNELoFD8c9b9LabAL4Twsg7k_51RUj5ipm3hTe13Kr_EJiDCO5bTcO_kuvFyy7cTfGINyMFqhQ7Q6dmMSkSRS3tW3Rp5fNJp9-9cidUdG-Mx-p-8txhbngjau9JX-Pt5Of9h4OskDIqBbV0w_JivSysk-_Di4ooeyOxZfvuYCWPqgX7_DUKxuZ3WFnuFI0D4',
-          ),
+          image: AssetImage('assets/backgrounds/ripple.png'),
           fit: BoxFit.cover,
         ),
       ),
