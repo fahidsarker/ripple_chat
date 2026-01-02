@@ -1,16 +1,14 @@
-import {
-  pgTable,
-  serial,
-  varchar,
-  timestamp,
-  boolean,
-  integer,
-} from "drizzle-orm/pg-core";
+import { pgTable, varchar, timestamp, boolean } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+
+const primaryId = (name: string) =>
+  varchar(name, { length: 255 })
+    .primaryKey()
+    .$default(() => crypto.randomUUID());
 
 // Users table
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: primaryId("id"),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   passwordHash: varchar("password_hash", { length: 255 }).notNull(),
@@ -19,9 +17,10 @@ export const users = pgTable("users", {
 
 // Chats table
 export const chats = pgTable("chats", {
-  id: serial("id").primaryKey(),
+  id: primaryId("id"),
+  title: varchar("title", { length: 255 }),
   isGroup: boolean("is_group").default(false).notNull(),
-  createdBy: integer("created_by")
+  createdBy: varchar("created_by", { length: 255 })
     .notNull()
     .references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -29,22 +28,22 @@ export const chats = pgTable("chats", {
 
 // Chat members table
 export const chatMembers = pgTable("chat_members", {
-  id: serial("id").primaryKey(),
-  chatId: integer("chat_id")
+  id: primaryId("id"),
+  chatId: varchar("chat_id", { length: 255 })
     .notNull()
     .references(() => chats.id),
-  userId: integer("user_id")
+  userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id),
 });
 
 // Messages table
 export const messages = pgTable("messages", {
-  id: serial("id").primaryKey(),
-  chatId: integer("chat_id")
+  id: primaryId("id"),
+  chatId: varchar("chat_id", { length: 255 })
     .notNull()
     .references(() => chats.id),
-  senderId: integer("sender_id")
+  senderId: varchar("sender_id", { length: 255 })
     .notNull()
     .references(() => users.id),
   content: varchar("content", { length: 1000 }).notNull(),
@@ -52,11 +51,11 @@ export const messages = pgTable("messages", {
 });
 
 export const messageStatusReceipts = pgTable("message_status_receipts", {
-  id: serial("id").primaryKey(),
-  messageId: integer("message_id")
+  id: primaryId("id"),
+  messageId: varchar("message_id", { length: 255 })
     .notNull()
     .references(() => messages.id),
-  userId: integer("user_id")
+  userId: varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id),
   status: varchar("status", { length: 50 })
@@ -70,11 +69,11 @@ export const messageStatusReceipts = pgTable("message_status_receipts", {
 
 // Calls table
 export const calls = pgTable("calls", {
-  id: serial("id").primaryKey(),
-  chatId: integer("chat_id")
+  id: primaryId("id"),
+  chatId: varchar("chat_id", { length: 255 })
     .notNull()
     .references(() => chats.id),
-  startedBy: integer("started_by")
+  startedBy: varchar("started_by", { length: 255 })
     .notNull()
     .references(() => users.id),
   roomName: varchar("room_name", { length: 255 }).notNull(),

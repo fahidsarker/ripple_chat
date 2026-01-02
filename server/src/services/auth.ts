@@ -8,7 +8,7 @@ const JWT_SECRET = env.JWT_SECRET ?? "your_jwt_secret_key";
 const SALT_ROUNDS = 10;
 
 export interface JWTPayload {
-  userId: number;
+  userId: string;
   email: string;
 }
 
