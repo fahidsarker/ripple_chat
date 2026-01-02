@@ -9,7 +9,7 @@ import 'package:ripple_client/core/theme/app_colors.dart';
 
 extension CtxExt on BuildContext {
   ThemeProvider get tp => watch<ThemeProvider>();
-  void showSnackBar(String message) {
+  void showSnackBar(String message, {bool isError = false}) {
     DelightToastBar(
       autoDismiss: true,
       position: DelightSnackbarPosition.top,

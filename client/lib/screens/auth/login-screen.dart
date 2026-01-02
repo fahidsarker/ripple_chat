@@ -1,19 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/color.dart';
 import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/core/theme/app_typography.dart';
+import 'package:ripple_client/extensions/results.dart';
+import 'package:ripple_client/extensions/riverpod.dart';
+import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/widgets/login_form.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
+  Future<bool> handleLogin(
+    String email,
+    String pass,
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final res = await ref.api
+        .post<Map<String, dynamic>>(
+          API_PATH_LOGIN,
+          body: {'email': email, 'password': pass},
+        )
+        .resolveWithUI(context);
 
-class _LoginScreenState extends State<LoginScreen> {
+    return res.when(
+      success: (e) {
+        ref.read(authTokenProvider.notifier).set(e['token'] as String);
+        return e.containsKey('token');
+      },
+      error: (e) => false,
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Row(
         children: [
@@ -42,7 +64,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                   Expanded(
                     child: Center(
-                      child: SingleChildScrollView(child: LoginForm()),
+                      child: SingleChildScrollView(
+                        child: LoginForm(
+                          key: const Key('login_form'),
+                          onLogin: (email, pass) async {
+                            return await handleLogin(email, pass, context, ref);
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ],

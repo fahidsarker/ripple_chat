@@ -12,12 +12,12 @@ import 'package:ripple_client/providers/api_provider.dart';
 class ConnectServerScreen extends HookConsumerWidget {
   const ConnectServerScreen({super.key});
 
-  Future<bool> verifyServerUrl(BuildContext context, String urlStr) async {
+  Future<String?> verifyServerUrl(BuildContext context, String urlStr) async {
     final url = Uri.tryParse(urlStr.trim());
 
     if (url == null) {
       context.showSnackBar('Please enter a valid URL.');
-      return false;
+      return null;
     }
 
     try {
@@ -25,17 +25,17 @@ class ConnectServerScreen extends HookConsumerWidget {
       final res = await dio.getUri(url.replace(path: '/ping'));
 
       if (!context.mounted) {
-        return false;
+        return null;
       }
       if (res.statusCode == 200) {
         final data = res.data;
         if (data is Map<String, dynamic> && data['pong'] == true) {
-          return true;
+          return url.toString();
         }
       }
-      return false;
+      return null;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
@@ -189,17 +189,17 @@ class ConnectServerScreen extends HookConsumerWidget {
                                       if (pedningReq.value) return;
                                       pedningReq.value = true;
                                       final urlTxt = textController.text;
-                                      final isValid = await verifyServerUrl(
+                                      final uri = await verifyServerUrl(
                                         context,
                                         urlTxt,
                                       );
                                       if (!context.mounted) {
                                         return;
                                       }
-                                      if (isValid) {
+                                      if (uri != null) {
                                         ref
                                             .read(baseApiRouteProvider.notifier)
-                                            .set(urlTxt);
+                                            .set(uri);
                                         context.go('/login');
                                       } else {
                                         context.showSnackBar(

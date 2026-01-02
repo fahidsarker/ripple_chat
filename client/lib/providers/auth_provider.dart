@@ -17,4 +17,9 @@ class AuthToken extends _$AuthToken {
     authTokenPref.value = token;
     state = token;
   }
+
+  void logout() {
+    authTokenPref.remove();
+    state = null;
+  }
 }

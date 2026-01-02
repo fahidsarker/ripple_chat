@@ -140,8 +140,8 @@ final class DioFamily extends $Family
 @ProviderFor(api)
 final apiProvider = ApiProvider._();
 
-final class ApiProvider extends $FunctionalProvider<Dio, Dio, Dio>
-    with $Provider<Dio> {
+final class ApiProvider extends $FunctionalProvider<Api, Api, Api>
+    with $Provider<Api> {
   ApiProvider._()
     : super(
         from: null,
@@ -158,21 +158,21 @@ final class ApiProvider extends $FunctionalProvider<Dio, Dio, Dio>
 
   @$internal
   @override
-  $ProviderElement<Dio> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<Api> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  Dio create(Ref ref) {
+  Api create(Ref ref) {
     return api(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Dio value) {
+  Override overrideWithValue(Api value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<Dio>(value),
+      providerOverride: $SyncValueProvider<Api>(value),
     );
   }
 }
 
-String _$apiHash() => r'c9d72636c94237fea461850700d0e99bcd10c691';
+String _$apiHash() => r'84f9a3bffbdc9ab3660582a75f4d5ae657b8cbaa';

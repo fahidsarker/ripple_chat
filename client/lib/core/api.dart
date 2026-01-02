@@ -1,0 +1,78 @@
+import 'package:dio/dio.dart';
+import 'package:resultx/resultx.dart';
+
+class Api {
+  final Dio _dio;
+  Api(this._dio);
+
+  Result<T, ApiError> _parseResponse<T>(Response response) {
+    if (response.statusCode != null &&
+        response.statusCode! >= 200 &&
+        response.statusCode! < 300) {
+      final data = response.data;
+      if (data is T) {
+        return Success(data);
+      } else {
+        return Error(
+          ApiError(
+            'API Error: Unexpected data type',
+            statusCode: response.statusCode,
+          ),
+        );
+      }
+    } else {
+      return Error(
+        ApiError(
+          'API Error: ${response.statusMessage ?? 'Unknown error'}',
+          statusCode: response.statusCode,
+        ),
+      );
+    }
+  }
+
+  FtrResult<T, ApiError> get<T>(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final res = await _dio.get<T>(path, queryParameters: queryParameters);
+      return _parseResponse<T>(res);
+    } on DioException catch (e) {
+      return Error(
+        ApiError(
+          e.message ?? 'Request Error occurred',
+          statusCode: e.response?.statusCode,
+        ),
+      );
+    } catch (e) {
+      print(e);
+      return Error(ApiError('Unexpected Error: $e'));
+    }
+  }
+
+  FtrResult<T, ApiError> post<T>(
+    String path, {
+    required Map<String, dynamic> body,
+  }) async {
+    try {
+      final res = await _dio.post<T>(path, data: body);
+      return _parseResponse<T>(res);
+    } on DioException catch (e) {
+      print(e);
+      return Error(
+        ApiError(
+          e.message ?? 'Request Error occurred',
+          statusCode: e.response?.statusCode,
+        ),
+      );
+    } catch (e) {
+      return Error(ApiError('Unexpected Error: $e'));
+    }
+  }
+}
+
+class ApiError {
+  final String message;
+  final int? statusCode;
+  ApiError(this.message, {this.statusCode});
+}

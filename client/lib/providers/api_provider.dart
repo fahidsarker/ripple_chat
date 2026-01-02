@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:ripple_client/core/api.dart';
 import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:solid_shared_pref/solid_shared_pref.dart';
@@ -30,6 +31,6 @@ Dio dio(Ref ref, {String? authToken}) {
 }
 
 @riverpod
-Dio api(Ref ref) {
-  return ref.watch(dioProvider(authToken: ref.watch(authTokenProvider)));
+Api api(Ref ref) {
+  return Api(ref.watch(dioProvider(authToken: ref.watch(authTokenProvider))));
 }
