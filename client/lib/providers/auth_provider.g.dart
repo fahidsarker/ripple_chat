@@ -9,50 +9,50 @@ part of 'auth_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(AuthToken)
-final authTokenProvider = AuthTokenProvider._();
+@ProviderFor(Auth)
+final authProvider = AuthProvider._();
 
-final class AuthTokenProvider extends $NotifierProvider<AuthToken, String?> {
-  AuthTokenProvider._()
+final class AuthProvider extends $NotifierProvider<Auth, AuthData?> {
+  AuthProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'authTokenProvider',
+        name: r'authProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$authTokenHash();
+  String debugGetCreateSourceHash() => _$authHash();
 
   @$internal
   @override
-  AuthToken create() => AuthToken();
+  Auth create() => Auth();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(String? value) {
+  Override overrideWithValue(AuthData? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<String?>(value),
+      providerOverride: $SyncValueProvider<AuthData?>(value),
     );
   }
 }
 
-String _$authTokenHash() => r'41425c3f83e499eb660df0bc7b1aad507a4af282';
+String _$authHash() => r'f3aafbe5bd01e853130a7b0b6cfd020a731fbbb6';
 
-abstract class _$AuthToken extends $Notifier<String?> {
-  String? build();
+abstract class _$Auth extends $Notifier<AuthData?> {
+  AuthData? build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<String?, String?>;
+    final ref = this.ref as $Ref<AuthData?, AuthData?>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<String?, String?>,
-              String?,
+              AnyNotifier<AuthData?, AuthData?>,
+              AuthData?,
               Object?,
               Object?
             >;

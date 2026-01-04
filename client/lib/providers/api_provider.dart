@@ -32,5 +32,5 @@ Dio dio(Ref ref, {String? authToken}) {
 
 @riverpod
 Api api(Ref ref) {
-  return Api(ref.watch(dioProvider(authToken: ref.watch(authTokenProvider))));
+  return Api(ref.watch(dioProvider(authToken: ref.watch(authProvider)?.token)));
 }

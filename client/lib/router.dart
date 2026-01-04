@@ -19,7 +19,7 @@ class _RouterChangeNotifier extends ChangeNotifier {
   final Ref ref;
 
   _RouterChangeNotifier(this.ref) {
-    ref.listen(authTokenProvider, (_, __) {
+    ref.listen(authProvider, (_, __) {
       notifyListeners();
     });
   }
@@ -33,7 +33,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: rootNavigatorKey,
     refreshListenable: routerNotifier,
     redirect: (context, state) {
-      final authRes = ref.read(authTokenProvider);
+      final authRes = ref.read(authProvider);
       if (authRes == null) {
         if (state.routeIn('/chat')) {
           return state.redirTo('/login');

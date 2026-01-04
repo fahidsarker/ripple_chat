@@ -61,26 +61,9 @@ class RegistrationScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(16.0),
                     child: SignupForm(
                       onRegister: (name, email, password) async {
-                        final res = await ref.api
-                            .post<Map<String, dynamic>>(
-                              API_PATH_REGISTER,
-                              body: {
-                                'email': email,
-                                'password': password,
-                                'name': name,
-                              },
-                            )
-                            .resolveWithUI(context);
-
-                        return res.when(
-                          success: (e) {
-                            ref
-                                .read(authTokenProvider.notifier)
-                                .set(e['token'] as String);
-                            return e.containsKey('token');
-                          },
-                          error: (e) => false,
-                        );
+                        return ref
+                            .read(authProvider.notifier)
+                            .register(name, email, password);
                       },
                     ),
                   ),

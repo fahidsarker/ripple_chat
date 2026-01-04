@@ -12,27 +12,27 @@ import 'package:ripple_client/widgets/login_form.dart';
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
-  Future<bool> handleLogin(
-    String email,
-    String pass,
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    final res = await ref.api
-        .post<Map<String, dynamic>>(
-          API_PATH_LOGIN,
-          body: {'email': email, 'password': pass},
-        )
-        .resolveWithUI(context);
+  // Future<bool> handleLogin(
+  //   String email,
+  //   String pass,
+  //   BuildContext context,
+  //   WidgetRef ref,
+  // ) async {
+  //   final res = await ref.api
+  //       .post<Map<String, dynamic>>(
+  //         API_PATH_LOGIN,
+  //         body: {'email': email, 'password': pass},
+  //       )
+  //       .resolveWithUI(context);
 
-    return res.when(
-      success: (e) {
-        ref.read(authTokenProvider.notifier).set(e['token'] as String);
-        return e.containsKey('token');
-      },
-      error: (e) => false,
-    );
-  }
+  //   return res.when(
+  //     success: (e) {
+  //       ref.read(authTokenProvider.notifier).set(e['token'] as String);
+  //       return e.containsKey('token');
+  //     },
+  //     error: (e) => false,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,7 +68,9 @@ class LoginScreen extends ConsumerWidget {
                         child: LoginForm(
                           key: const Key('login_form'),
                           onLogin: (email, pass) async {
-                            return await handleLogin(email, pass, context, ref);
+                            return await ref
+                                .read(authProvider.notifier)
+                                .login(email, pass);
                           },
                         ),
                       ),

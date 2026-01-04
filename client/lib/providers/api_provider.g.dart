@@ -175,4 +175,4 @@ final class ApiProvider extends $FunctionalProvider<Api, Api, Api>
   }
 }
 
-String _$apiHash() => r'84f9a3bffbdc9ab3660582a75f4d5ae657b8cbaa';
+String _$apiHash() => r'30e488148998cd64ffe169a9926b6b5e060f15ce';

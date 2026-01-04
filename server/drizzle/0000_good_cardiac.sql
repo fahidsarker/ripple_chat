@@ -1,42 +1,43 @@
 CREATE TABLE "calls" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"chat_id" integer NOT NULL,
-	"started_by" integer NOT NULL,
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"chat_id" varchar(255) NOT NULL,
+	"started_by" varchar(255) NOT NULL,
 	"room_name" varchar(255) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "chat_members" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"chat_id" integer NOT NULL,
-	"user_id" integer NOT NULL
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"chat_id" varchar(255) NOT NULL,
+	"user_id" varchar(255) NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "chats" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"title" varchar(255),
 	"is_group" boolean DEFAULT false NOT NULL,
-	"created_by" integer NOT NULL,
+	"created_by" varchar(255) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "message_status_receipts" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"message_id" integer NOT NULL,
-	"user_id" integer NOT NULL,
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"message_id" varchar(255) NOT NULL,
+	"user_id" varchar(255) NOT NULL,
 	"status" varchar(50) NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "messages" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"chat_id" integer NOT NULL,
-	"sender_id" integer NOT NULL,
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"chat_id" varchar(255) NOT NULL,
+	"sender_id" varchar(255) NOT NULL,
 	"content" varchar(1000) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" varchar(255) PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"email" varchar(255) NOT NULL,
 	"password_hash" varchar(255) NOT NULL,
