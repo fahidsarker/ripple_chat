@@ -3,7 +3,7 @@ import 'package:ripple_client/core/theme/app_colors.dart';
 
 /// Theme provider to manage app theme state
 class ThemeProvider with ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode _themeMode = ThemeMode.dark;
 
   /// Current theme mode
   ThemeMode get themeMode => _themeMode;

@@ -4,7 +4,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/screens/auth/login-screen.dart';
 import 'package:ripple_client/screens/auth/registration_screen.dart';
-import 'package:ripple_client/screens/chat-screen.dart';
+import 'package:ripple_client/screens/home/call-screen.dart';
+import 'package:ripple_client/screens/home/chat-screen.dart';
+import 'package:ripple_client/screens/home/contact-screen.dart';
+import 'package:ripple_client/screens/home/files-screen.dart';
+import 'package:ripple_client/screens/home/home-screen.dart';
+import 'package:ripple_client/screens/home/profiles-screen.dart';
 import 'package:ripple_client/screens/init/connect-server.dart';
 import 'package:ripple_client/screens/init/init-redirect.dart';
 import 'package:ripple_client/screens/welcome.dart';
@@ -53,10 +58,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/welcome', builder: (_, __) => WelcomeScreen()),
       GoRoute(path: '/registration', builder: (_, __) => RegistrationScreen()),
       GoRoute(path: '/login', builder: (_, __) => LoginScreen()),
-      GoRoute(path: '/chat', builder: (_, __) => ChatScreen()),
       GoRoute(
         path: '/connect-server',
         builder: (_, __) => ConnectServerScreen(),
+      ),
+      ShellRoute(
+        builder: (context, state, child) => HomeScreen(child: child),
+        routes: [
+          GoRoute(path: '/chat', builder: (_, __) => ChatScreen()),
+          GoRoute(path: '/profile', builder: (_, __) => ProfileScreen()),
+          GoRoute(path: '/files', builder: (_, __) => FilesScreen()),
+          GoRoute(path: '/contacts', builder: (_, __) => ContactScreen()),
+          GoRoute(path: '/calls', builder: (_, __) => CallScreen()),
+        ],
       ),
     ],
   );

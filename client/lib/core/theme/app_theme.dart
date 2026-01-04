@@ -246,7 +246,7 @@ class AppTheme {
       color: colors(isLight: isLight).surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: colors(isLight: isLight).border, width: 1),
+        // side: BorderSide(color: colors(isLight: isLight).border, width: 1),
       ),
       margin: EdgeInsets.zero,
     );
