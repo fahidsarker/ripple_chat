@@ -15,6 +15,9 @@ export const authRequired = (
   res: Response,
   next: NextFunction
 ) => {
+  if (req.user) {
+    return next();
+  }
   const user = getUserFromJwt(req.headers);
   if (user === "no-token") {
     return res.status(401).json({ error: "Access token required" });
