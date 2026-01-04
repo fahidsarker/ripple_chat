@@ -275,7 +275,7 @@ final pageTransitionTheme = PageTransitionsTheme(
   builders: kIsWeb
       ? {
           for (final platform in TargetPlatform.values)
-            platform: const NoTransitionsBuilder(),
+            platform: const FadeForwardsPageTransitionsBuilder(),
         }
       : const {
           // Use default transitions for non-web platforms
@@ -286,18 +286,3 @@ final pageTransitionTheme = PageTransitionsTheme(
           TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
         },
 );
-
-class NoTransitionsBuilder extends PageTransitionsBuilder {
-  const NoTransitionsBuilder();
-
-  @override
-  Widget buildTransitions<T>(
-    PageRoute<T> route,
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    return child;
-  }
-}

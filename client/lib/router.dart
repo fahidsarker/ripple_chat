@@ -14,7 +14,6 @@ import 'package:ripple_client/screens/home/profiles_screen.dart';
 import 'package:ripple_client/screens/init/connect-server.dart';
 import 'package:ripple_client/screens/init/init-redirect.dart';
 import 'package:ripple_client/screens/welcome.dart';
-import 'package:ripple_client/widgets/no_widget.dart';
 
 final globalRouteHistory = <String>[];
 
@@ -70,7 +69,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           ShellRoute(
             builder: (_, __, child) => ChatScreen(child: child),
             routes: [
-              GoRoute(path: '/chat', builder: (_, __) => NoWidget()),
+              GoRoute(
+                path: '/chat',
+                builder: (_, __) =>
+                    Center(child: Text('Select a chat to start messaging')),
+              ),
               GoRoute(path: '/chat/new', builder: (_, __) => NewChatScreen()),
             ],
           ),
