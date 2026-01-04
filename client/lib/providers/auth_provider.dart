@@ -67,7 +67,7 @@ class Auth extends _$Auth {
   Future<bool> register(String name, String email, String password) async {
     final res = await Api(ref.read(dioProvider(authToken: null)))
         .post<Map<String, dynamic>>(
-          API_PATH_REGISTER,
+          ApiPost.register.path,
           body: {'name': name, 'email': email, 'password': password},
         );
 
@@ -77,7 +77,7 @@ class Auth extends _$Auth {
   Future<bool> login(String email, String password) async {
     final res = await Api(ref.read(dioProvider(authToken: null)))
         .post<Map<String, dynamic>>(
-          API_PATH_LOGIN,
+          ApiPost.login.path,
           body: {'email': email, 'password': password},
         );
 

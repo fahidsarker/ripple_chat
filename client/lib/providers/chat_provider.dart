@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:resultx/resultx.dart';
+import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/riverpod.dart';
 import 'package:ripple_client/models/chat.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -30,7 +31,7 @@ class ChatList extends _$ChatList {
   Future<List<Chat>> fetchChats(int offset) {
     return ref.api
         .get<Map<String, dynamic>>(
-          '/api/chats',
+          ApiGet.chats.path,
           queryParameters: {
             'limit': pageSize,
             'offset': offset,

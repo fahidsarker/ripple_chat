@@ -14,7 +14,7 @@ Future<List<User>> userList(
   final res = await ref
       .read(apiProvider)
       .get<Map<String, dynamic>>(
-        API_PATH_USERS,
+        ApiGet.users.path,
         queryParameters: {
           if (limit != null) 'limit': limit,
           if (offset != null) 'offset': offset,

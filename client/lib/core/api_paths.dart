@@ -1,9 +1,25 @@
-// ignore_for_file: constant_identifier_names
+String _messagesRoute(String chatId) => '/api/chats/$chatId/messages';
 
-const API_PATH_LOGIN = '/api/auth/login';
-const API_PATH_REGISTER = '/api/auth/register';
-const API_PATH_USERS = '/api/users';
-const API_PATH_CHATS = '/api/chats';
+enum ApiGet<T> {
+  chats('/api/chats'),
+  users('/api/users'),
+  messages(_messagesRoute),
+  profile('/api/profile');
 
-const API_UPDATE_USER_NAME = '/api/profile/update-name';
-const API_UPDATE_USER_PASSWORD = '/api/profile/update-password';
+  final T path;
+  const ApiGet(this.path);
+}
+
+enum ApiPost<T> {
+  login('/api/auth/login'),
+  register('/api/auth/register'),
+
+  chats('/api/chats'),
+  messages(_messagesRoute),
+
+  profileUpdateName('/api/profile/update-name'),
+  profileUpdatePassword('/api/profile/update-password');
+
+  final T path;
+  const ApiPost(this.path);
+}

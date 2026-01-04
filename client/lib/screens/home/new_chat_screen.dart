@@ -59,7 +59,7 @@ class NewChatScreen extends HookConsumerWidget {
                 final selectedUsers = ref.read(_selectedUsersState);
                 await ref.api
                     .post<Map<String, dynamic>>(
-                      API_PATH_CHATS,
+                      ApiPost.chats.path,
                       body: {
                         'title': titleController.text,
                         'memberIds': selectedUsers,
