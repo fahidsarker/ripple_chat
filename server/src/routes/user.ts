@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { authRequired } from "../middleware/auth";
-import { getUser } from "../services/auth";
+import { authService, getUser } from "../services/auth";
 import { apiHandler, queryParams } from "../core/api-handler";
 import { Res } from "../core/response";
 import { db, tables } from "../db";
@@ -28,15 +28,6 @@ router.get(
           email: true,
           createdAt: true,
         },
-        // where: search
-        //   ? and(
-        //       not(eq(tables.users.id, userId)),
-        //       or(
-        //         ilike(users.name, `%${search}%`),
-        //         ilike(users.email, `%${search}%`)
-        //       )
-        //     )
-        //   : not(eq(tables.users.id, userId)),
         where: search
           ? or(
               ilike(users.name, `%${search}%`),

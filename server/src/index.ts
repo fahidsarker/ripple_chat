@@ -10,6 +10,8 @@ const server = createServer(app);
 import chatRoutes from "./routes/chats";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
+import profileRoutes from "./routes/profile";
+
 import { globalErrorHandler } from "./middleware/global-error-handle";
 
 const io = new Server(server, {
@@ -76,6 +78,7 @@ app.post("/log", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/users", userRoutes);
 
