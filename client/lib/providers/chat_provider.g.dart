@@ -9,24 +9,18 @@ part of 'chat_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(chatList)
+@ProviderFor(ChatList)
 final chatListProvider = ChatListFamily._();
 
 final class ChatListProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<List<Chat>>,
-          List<Chat>,
-          FutureOr<List<Chat>>
-        >
-    with $FutureModifier<List<Chat>>, $FutureProvider<List<Chat>> {
+    extends $AsyncNotifierProvider<ChatList, List<Chat>> {
   ChatListProvider._({
     required ChatListFamily super.from,
-    required ({int? limit, int? offset, String? search}) super.argument,
+    required ({int pageSize, String? search}) super.argument,
   }) : super(
          retry: null,
          name: r'chatListProvider',
-         isAutoDispose: true,
+         isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -43,20 +37,7 @@ final class ChatListProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<Chat>> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<List<Chat>> create(Ref ref) {
-    final argument =
-        this.argument as ({int? limit, int? offset, String? search});
-    return chatList(
-      ref,
-      limit: argument.limit,
-      offset: argument.offset,
-      search: argument.search,
-    );
-  }
+  ChatList create() => ChatList();
 
   @override
   bool operator ==(Object other) {
@@ -69,13 +50,16 @@ final class ChatListProvider
   }
 }
 
-String _$chatListHash() => r'4f2c6df257b9af8abfe00e63111937c7d2faa053';
+String _$chatListHash() => r'dab74f8894f0b05cf4d5fe006f2293770942fd79';
 
 final class ChatListFamily extends $Family
     with
-        $FunctionalFamilyOverride<
+        $ClassFamilyOverride<
+          ChatList,
+          AsyncValue<List<Chat>>,
+          List<Chat>,
           FutureOr<List<Chat>>,
-          ({int? limit, int? offset, String? search})
+          ({int pageSize, String? search})
         > {
   ChatListFamily._()
     : super(
@@ -83,15 +67,40 @@ final class ChatListFamily extends $Family
         name: r'chatListProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: true,
+        isAutoDispose: false,
       );
 
-  ChatListProvider call({int? limit, int? offset, String? search}) =>
+  ChatListProvider call({int pageSize = 20, String? search}) =>
       ChatListProvider._(
-        argument: (limit: limit, offset: offset, search: search),
+        argument: (pageSize: pageSize, search: search),
         from: this,
       );
 
   @override
   String toString() => r'chatListProvider';
+}
+
+abstract class _$ChatList extends $AsyncNotifier<List<Chat>> {
+  late final _$args = ref.$arg as ({int pageSize, String? search});
+  int get pageSize => _$args.pageSize;
+  String? get search => _$args.search;
+
+  FutureOr<List<Chat>> build({int pageSize = 20, String? search});
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<Chat>>, List<Chat>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<Chat>>, List<Chat>>,
+              AsyncValue<List<Chat>>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(
+      ref,
+      () => build(pageSize: _$args.pageSize, search: _$args.search),
+    );
+  }
 }

@@ -40,8 +40,21 @@ class NewChatScreen extends HookConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            // if (kDebugMode)
+            //   ElevatedButton(
+            //     onPressed: () async {
+            //       await ref.api
+            //           .post<Map<String, dynamic>>(
+            //             '/api/chats/create-dummy',
+            //             body: {},
+            //           )
+            //           .mapSuccess((d) => d['chat']['id'] as String)
+            //           .resolveWithUI(context)
+            //           .onSuccess((d) => context.go('/chat/$d'));
+            //     },
+            //     child: const Text('Dummy Chats'),
+            //   ),
             ElevatedButton(
-              key: const Key('new_chat_create_button'),
               onPressed: () async {
                 final selectedUsers = ref.read(_selectedUsersState);
                 await ref.api
