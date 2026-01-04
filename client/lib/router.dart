@@ -9,10 +9,12 @@ import 'package:ripple_client/screens/home/chat-screen.dart';
 import 'package:ripple_client/screens/home/contact-screen.dart';
 import 'package:ripple_client/screens/home/files-screen.dart';
 import 'package:ripple_client/screens/home/home-screen.dart';
+import 'package:ripple_client/screens/home/new_chat_screen.dart';
 import 'package:ripple_client/screens/home/profiles-screen.dart';
 import 'package:ripple_client/screens/init/connect-server.dart';
 import 'package:ripple_client/screens/init/init-redirect.dart';
 import 'package:ripple_client/screens/welcome.dart';
+import 'package:ripple_client/widgets/no_widget.dart';
 
 final globalRouteHistory = <String>[];
 
@@ -65,7 +67,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ShellRoute(
         builder: (context, state, child) => HomeScreen(child: child),
         routes: [
-          GoRoute(path: '/chat', builder: (_, __) => ChatScreen()),
+          ShellRoute(
+            builder: (_, __, child) => ChatScreen(child: child),
+            routes: [
+              GoRoute(path: '/chat', builder: (_, __) => NoWidget()),
+              GoRoute(path: '/chat/new', builder: (_, __) => NewChatScreen()),
+            ],
+          ),
           GoRoute(path: '/profile', builder: (_, __) => ProfileScreen()),
           GoRoute(path: '/files', builder: (_, __) => FilesScreen()),
           GoRoute(path: '/contacts', builder: (_, __) => ContactScreen()),

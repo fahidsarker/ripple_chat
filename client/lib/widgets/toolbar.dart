@@ -14,7 +14,7 @@ class Toolbar extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final expanded = useState(false);
-    final currentPath = GoRouterState.of(context).fullPath;
+    final currentPath = GoRouterState.of(context).fullPath ?? 'xx';
 
     final auth = ref.watch(authProvider);
     if (auth == null) {
@@ -61,7 +61,7 @@ class Toolbar extends HookConsumerWidget {
             TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: context.c.textSecondary,
-                backgroundColor: currentPath == item.href
+                backgroundColor: currentPath.contains(item.href ?? 'zz')
                     ? context.c.textSecondary.wOpacity(0.2)
                     : Colors.transparent,
               ),
@@ -89,7 +89,7 @@ class Toolbar extends HookConsumerWidget {
           else
             IconButton(
               style: IconButton.styleFrom(
-                backgroundColor: currentPath == item.href
+                backgroundColor: currentPath.contains(item.href ?? 'zz')
                     ? context.c.textSecondary.wOpacity(0.2)
                     : Colors.transparent,
                 foregroundColor: context.c.textSecondary,

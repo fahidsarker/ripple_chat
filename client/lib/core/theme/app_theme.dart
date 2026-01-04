@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'app_colors.dart';
@@ -12,6 +13,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      pageTransitionsTheme: pageTransitionTheme,
       colorScheme: ColorScheme.light(
         brightness: Brightness.light,
         primary: lightColors.primary,
@@ -59,6 +61,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      pageTransitionsTheme: pageTransitionTheme,
       colorScheme: ColorScheme.dark(
         brightness: Brightness.dark,
         primary: darkColors.primary,
@@ -265,5 +268,36 @@ class AppTheme {
       selectedLabelStyle: AppTypography.labelSmall,
       unselectedLabelStyle: AppTypography.labelSmall,
     );
+  }
+}
+
+final pageTransitionTheme = PageTransitionsTheme(
+  builders: kIsWeb
+      ? {
+          for (final platform in TargetPlatform.values)
+            platform: const NoTransitionsBuilder(),
+        }
+      : const {
+          // Use default transitions for non-web platforms
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+        },
+);
+
+class NoTransitionsBuilder extends PageTransitionsBuilder {
+  const NoTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return child;
   }
 }
