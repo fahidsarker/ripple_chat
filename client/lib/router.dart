@@ -6,6 +6,7 @@ import 'package:ripple_client/screens/auth/login-screen.dart';
 import 'package:ripple_client/screens/auth/registration_screen.dart';
 import 'package:ripple_client/screens/chat-screen.dart';
 import 'package:ripple_client/screens/init/connect-server.dart';
+import 'package:ripple_client/screens/init/init-redirect.dart';
 import 'package:ripple_client/screens/welcome.dart';
 
 final globalRouteHistory = <String>[];
@@ -28,7 +29,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final routerNotifier = _RouterChangeNotifier(ref);
 
   return GoRouter(
-    initialLocation: '/connect-server',
+    initialLocation: '/',
     navigatorKey: rootNavigatorKey,
     refreshListenable: routerNotifier,
     redirect: (context, state) {
@@ -48,6 +49,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(path: '/', builder: (_, __) => InitialRedirectScreen()),
       GoRoute(path: '/welcome', builder: (_, __) => WelcomeScreen()),
       GoRoute(path: '/registration', builder: (_, __) => RegistrationScreen()),
       GoRoute(path: '/login', builder: (_, __) => LoginScreen()),

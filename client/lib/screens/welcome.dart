@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:ripple_client/extensions/context.dart';
+import 'package:ripple_client/preferences.dart';
 import 'package:ripple_client/providers/api_provider.dart';
 import '../core/theme/theme.dart';
 import 'package:ripple_client/extensions/color.dart';
@@ -135,6 +136,7 @@ class WelcomeScreen extends ConsumerWidget {
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () {
+                                welcomeScreenShown.value = true;
                                 if (ref.read(baseApiRouteProvider) == null) {
                                   context.go('/connect-server');
                                 } else {
