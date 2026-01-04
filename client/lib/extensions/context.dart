@@ -48,4 +48,6 @@ extension CtxExt on BuildContext {
 
   GoRouterState get router => GoRouterState.of(this);
   AppColors get c => tp.colors;
+
+  double get defPadding => isWide ? 16.0 : 8.0;
 }

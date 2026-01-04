@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/widgets/toolbar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,12 +10,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(context.defPadding),
         child: Row(
           children: [
-            // Assuming Toolbar is a custom widget defined elsewhere
-            Toolbar(),
-            const SizedBox(width: 16),
+            if (context.isWide) ...[Toolbar(), const SizedBox(width: 16)],
             Expanded(child: child),
           ],
         ),

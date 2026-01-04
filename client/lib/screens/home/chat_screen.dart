@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/widgets/chats/chat_list.dart';
-import 'package:ripple_client/widgets/no_widget.dart';
 
 class ChatScreen extends ConsumerWidget {
   final Widget child;
@@ -13,7 +12,7 @@ class ChatScreen extends ConsumerWidget {
     final hasDetailedChild = context.router.fullPath != '/chat';
     return Row(
       children: [
-        if (context.isWide || !hasDetailedChild)
+        if (context.isWide || !hasDetailedChild) ...[
           Expanded(
             flex: 2,
             child: Card(
@@ -23,7 +22,8 @@ class ChatScreen extends ConsumerWidget {
               ),
             ),
           ),
-        const SizedBox(width: 16),
+          if (context.isWide) SizedBox(width: context.defPadding),
+        ],
         if (hasDetailedChild || context.isWide)
           Expanded(
             flex: context.isUltraWide
