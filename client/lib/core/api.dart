@@ -50,10 +50,7 @@ class Api {
     }
   }
 
-  FtrResult<T, ApiError> post<T>(
-    String path, {
-    required Map<String, dynamic> body,
-  }) async {
+  FtrResult<T, ApiError> post<T>(String path, {required Object body}) async {
     try {
       final res = await _dio.post<T>(path, data: body);
       return _parseResponse<T>(res);
@@ -68,6 +65,24 @@ class Api {
     } catch (e) {
       return Error(ApiError('Unexpected Error: $e'));
     }
+  }
+
+  // temporary logging function
+  // logs directly to the server
+  // me just lazy to change console logs to server logs
+  // mostliky tobe removed in future
+  void sLog(
+    dynamic v1, [
+    dynamic v2 = 'x_x',
+    dynamic v3 = 'x_x',
+    dynamic v4 = 'x_x',
+  ]) {
+    post(
+      '/log',
+      body: {
+        'logs': [v1, v2, v3, v4].where((v) => v != 'x_x').toList(),
+      },
+    );
   }
 }
 

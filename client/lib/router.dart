@@ -9,6 +9,7 @@ import 'package:ripple_client/screens/home/chat_screen.dart';
 import 'package:ripple_client/screens/home/contact_screen.dart';
 import 'package:ripple_client/screens/home/files_screen.dart';
 import 'package:ripple_client/screens/home/home_screen.dart';
+import 'package:ripple_client/screens/home/messaging_screen.dart';
 import 'package:ripple_client/screens/home/new_chat_screen.dart';
 import 'package:ripple_client/screens/home/profiles_screen.dart';
 import 'package:ripple_client/screens/init/connect-server.dart';
@@ -41,7 +42,13 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final authRes = ref.read(authProvider);
       if (authRes == null) {
-        if (state.routeIn('/chat')) {
+        if (state.routeIn(
+          '/chat',
+          '/profile',
+          '/files',
+          '/contacts',
+          '/calls',
+        )) {
           return state.redirTo('/login');
         }
       } else if (state.routeIn(
@@ -75,6 +82,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     Center(child: Text('Select a chat to start messaging')),
               ),
               GoRoute(path: '/chat/new', builder: (_, __) => NewChatScreen()),
+              GoRoute(path: '/chat/:id', builder: (_, __) => MessagingScreen()),
             ],
           ),
           GoRoute(path: '/profile', builder: (_, __) => ProfileScreen()),

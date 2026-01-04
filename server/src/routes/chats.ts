@@ -23,6 +23,7 @@ router.get(
       const userChats = await db
         .select({
           id: chats.id,
+          title: chats.title,
           isGroup: chats.isGroup,
           createdBy: chats.createdBy,
           createdAt: chats.createdAt,
@@ -49,7 +50,7 @@ router.post(
   apiHandler(async (req: Request) => {
     try {
       const validatedData = createChatSchema.parse(req.body);
-      const { isGroup, memberIds } = validatedData;
+      const { isGroup, memberIds, title } = validatedData;
       const createdBy = getUser(req).userId;
 
       // Add creator to member list if not already included
@@ -69,6 +70,7 @@ router.post(
       const [newChat] = await db
         .insert(chats)
         .values({
+          title,
           isGroup,
           createdBy,
         })

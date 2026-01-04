@@ -9,6 +9,7 @@ const app = express();
 const server = createServer(app);
 import chatRoutes from "./routes/chats";
 import authRoutes from "./routes/auth";
+import userRoutes from "./routes/user";
 import { globalErrorHandler } from "./middleware/global-error-handle";
 
 const io = new Server(server, {
@@ -26,9 +27,21 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+// Custom logging middleware
 app.use((req, res, next) => {
-  // log incoming requests
-  console.log(`${req.method}\t${req.url}`);
+  res.on("finish", () => {
+    console.log(
+      `${new Date().toLocaleString(undefined, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      })}\t${req.method}\t${req.originalUrl}\t${res.statusCode}`
+    );
+  });
   next();
 });
 
@@ -51,8 +64,20 @@ app.get("/ping", (req, res) => {
   });
 });
 
+app.post("/log", (req, res) => {
+  const body = req.body;
+  const logs = body.logs;
+  if (logs && Array.isArray(logs)) {
+    logs.forEach((log: any) => {
+      console.log(`[CLIENT LOG] ${log}`);
+    });
+  }
+  return res.status(200).send("Loged");
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
+app.use("/api/users", userRoutes);
 
 // 404 handler
 app.use("*", (req, res) => {
