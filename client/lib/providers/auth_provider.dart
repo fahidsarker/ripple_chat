@@ -35,7 +35,12 @@ class Auth extends _$Auth {
       return null;
     }
     final user = User.fromJson(jsonDecode(userJson));
+    initProfile(token);
     return AuthData(token: token, user: user);
+  }
+
+  Api api(String? token) {
+    return Api(ref.read(dioProvider(authToken: token)));
   }
 
   void logout() {
@@ -64,22 +69,32 @@ class Auth extends _$Auth {
     );
   }
 
+  Future<bool> initProfile(String token) async {
+    final res = await api(token).get<Map<String, dynamic>>(ApiGet.profile.path);
+    return _handleAuthRes(res.mapSuccess((e) => {...e, 'token': state!.token}));
+  }
+
+  Future<bool> reloadProfile() async {
+    if (state?.token == null) {
+      return false;
+    }
+    return initProfile(state!.token);
+  }
+
   Future<bool> register(String name, String email, String password) async {
-    final res = await Api(ref.read(dioProvider(authToken: null)))
-        .post<Map<String, dynamic>>(
-          ApiPost.register.path,
-          body: {'name': name, 'email': email, 'password': password},
-        );
+    final res = await api(null).post<Map<String, dynamic>>(
+      ApiPost.register.path,
+      body: {'name': name, 'email': email, 'password': password},
+    );
 
     return _handleAuthRes(res);
   }
 
   Future<bool> login(String email, String password) async {
-    final res = await Api(ref.read(dioProvider(authToken: null)))
-        .post<Map<String, dynamic>>(
-          ApiPost.login.path,
-          body: {'email': email, 'password': password},
-        );
+    final res = await api(null).post<Map<String, dynamic>>(
+      ApiPost.login.path,
+      body: {'email': email, 'password': password},
+    );
 
     return _handleAuthRes(res);
   }

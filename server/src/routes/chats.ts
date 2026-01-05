@@ -71,7 +71,7 @@ router.get(
 
       const userChats = await db
         .select({
-          chatId: chats.id,
+          id: chats.id,
           title: chats.title,
           isGroup: chats.isGroup,
           createdAt: chats.createdAt,
@@ -128,7 +128,6 @@ router.get(
         .orderBy(sql`last_msg.created_at DESC NULLS LAST`)
         .limit(limit)
         .offset(offset);
-
       // res.json(userChats);
       return Res.json({ chats: userChats });
     } catch (error) {

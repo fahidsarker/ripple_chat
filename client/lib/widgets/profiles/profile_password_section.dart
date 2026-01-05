@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:resultx/resultx.dart';
+import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/context.dart';
+import 'package:ripple_client/extensions/results.dart';
+import 'package:ripple_client/extensions/riverpod.dart';
 import 'package:ripple_client/widgets/profiles/profile_section.dart';
 
 class ProfilePasswordSection extends HookConsumerWidget {
@@ -18,6 +22,8 @@ class ProfilePasswordSection extends HookConsumerWidget {
     final obscureCurrentPassword = useState(true);
     final obscureNewPassword = useState(true);
     final obscureConfirmPassword = useState(true);
+
+    final loading = useState(false);
 
     return ProfileSection(
       icon: Icons.lock_outline,
@@ -80,30 +86,59 @@ class ProfilePasswordSection extends HookConsumerWidget {
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () {
-                            currentPasswordController.clear();
-                            newPasswordController.clear();
-                            confirmPasswordController.clear();
-                            isChangingPassword.value = false;
-                          },
+                          onPressed: loading.value
+                              ? null
+                              : () {
+                                  currentPasswordController.clear();
+                                  newPasswordController.clear();
+                                  confirmPasswordController.clear();
+                                  isChangingPassword.value = false;
+                                },
                           child: const Text('Cancel'),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            if (_passwordFormKey.currentState?.validate() ??
-                                false) {
-                              currentPasswordController.clear();
-                              newPasswordController.clear();
-                              confirmPasswordController.clear();
-                              isChangingPassword.value = false;
-                              context.showSnackBar(
-                                'Password changed successfully',
-                              );
-                            }
-                          },
+                          onPressed: loading.value
+                              ? null
+                              : () async {
+                                  if (_passwordFormKey.currentState
+                                          ?.validate() ??
+                                      false) {
+                                    loading.value = true;
+
+                                    final res = await ref.api
+                                        .post(
+                                          ApiPost.profileUpdatePassword.path,
+                                          body: {
+                                            'old_password':
+                                                currentPasswordController.text,
+                                            'new_password':
+                                                newPasswordController.text,
+                                          },
+                                        )
+                                        .mapSuccess((_) {
+                                          currentPasswordController.clear();
+                                          newPasswordController.clear();
+                                          confirmPasswordController.clear();
+                                          isChangingPassword.value = false;
+                                          return true;
+                                        })
+                                        .resolve(onError: (_) => false)
+                                        .whenComplete(() {
+                                          loading.value = false;
+                                        })
+                                        .data;
+                                    if (!context.mounted) return;
+                                    context.showSnackBar(
+                                      res == true
+                                          ? 'Password updated successfully'
+                                          : 'Failed to update password. Please try again.',
+                                      isError: res != true,
+                                    );
+                                  }
+                                },
                           child: const Text('Update Password'),
                         ),
                       ),

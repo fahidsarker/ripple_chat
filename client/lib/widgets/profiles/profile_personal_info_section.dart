@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:resultx/resultx.dart';
+import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/context.dart';
+import 'package:ripple_client/extensions/riverpod.dart';
 import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/widgets/profiles/profile_section.dart';
 import 'package:ripple_client/widgets/ui/consume.dart';
@@ -13,6 +16,7 @@ class ProfilePersonalInfoSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isEditingName = useState(false);
+    final isLoading = useState(false);
     final auth = ref.watch(authProvider);
     final nameController = useTextEditingController();
 
@@ -57,12 +61,41 @@ class ProfilePersonalInfoSection extends HookConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    if (isEditingName.value) ...[
+                    if (isLoading.value)
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: context.c.primary,
+                        ),
+                      )
+                    else if (isEditingName.value) ...[
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState?.validate() ?? false) {
-                            isEditingName.value = false;
-                            context.showSnackBar('Name updated successfully');
+                            final newName = nameController.text.trim();
+                            isLoading.value = true;
+                            final (message, isError) = await ref.api
+                                .post(
+                                  ApiPost.profileUpdateName.path,
+                                  body: {'name': newName},
+                                )
+                                .mapSuccess(
+                                  (_) => ('Name updated successfully', false),
+                                )
+                                .resolve(onError: (err) => (err.message, true))
+                                .whenComplete(() {
+                                  isEditingName.value = false;
+                                  isLoading.value = false;
+                                  ref
+                                      .read(authProvider.notifier)
+                                      .reloadProfile();
+                                })
+                                .data;
+
+                            if (!context.mounted) return;
+                            context.showSnackBar(message, isError: isError);
                           }
                         },
                         icon: Icon(Icons.check, color: context.c.success),
