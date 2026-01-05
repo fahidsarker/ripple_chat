@@ -29,12 +29,14 @@ Ripple Chat addresses the need for a straightforward messaging solution without 
 ### Planned
 
 - 🔄 Group chats and direct messages
-- 🔄 Media sharing (images, videos, files)
-- 🔄 File thumbnail generation and optimisation for delivery
 - 🔄 Real-time messaging with WebSockets
+- 🔄 Message read receipts and typing indicators
+- 🔄 User presence (online/offline status)
+- 🔄 Media sharing (images, videos, files)
 - 🔄 Responsive design for mobile and desktop
-- 🔄 Push notifications
+- 🔄 File thumbnail generation and optimisation for delivery
 - 🔄 Audio and video calls (via LiveKit integration)
+- 🔄 Push notifications
 - 🔄 End-to-end encryption for secure communication
 
 ## Architecture
@@ -65,9 +67,117 @@ Before setting up Ripple Chat, ensure you have the following installed:
 - **Redis** server (optional, for caching)
 - **LiveKit** server (optional, for audio/video calls)
 
+## How to Build and Run Locally
+
+### 1. Clone the Repository
+
+```bash
+git clone <your-repository-url>
+cd ripple_chat
+```
+
+### 2. Backend Setup
+
+Navigate to the server directory and install dependencies:
+
+```bash
+cd server
+npm install
+```
+
+Create a `.env` file in the server directory with the following variables:
+
+```env
+NODE_ENV=development
+SERVER_PORT=3000
+DATABASE_URL=postgresql://username:password@localhost:5432/ripple_chat
+SERVER_URL=http://localhost:3000
+JWT_SECRET=your-jwt-secret-key
+LIVEKIT_API_KEY=your-livekit-api-key
+LIVEKIT_API_SECRET=your-livekit-api-secret
+LIVEKIT_WS_URL=ws://localhost:7880
+FILE_STORAGE_PATH=./temp/uploads
+```
+
+Set up the database:
+
+> using bun but you can also use npm/pnpm/yarn if preferred
+
+```bash
+# Generate database migrations
+bun run db:generate
+
+# Apply migrations to your database
+bun run db:migrate
+
+# Optional: Open Drizzle Studio to view your database
+bun run db:studio
+```
+
+Build and start the server:
+
+```bash
+# For development (with hot reload)
+bun run dev
+
+# Or build and start for production
+bun run build
+bun start
+```
+
+The backend server will be available at `http://localhost:3000`.
+
+### 3. Client Setup
+
+Navigate to the client directory and install dependencies:
+
+```bash
+cd ../client
+flutter pub get
+```
+
+Run the Flutter application:
+
+```bash
+# For web
+flutter run -d chrome
+
+# For iOS simulator
+flutter run -d ios
+
+# For Android emulator
+flutter run -d android
+
+# For desktop (macOS/Windows/Linux)
+flutter run -d macos    # or windows/linux
+```
+
+### 4. Database Setup
+
+Make sure PostgreSQL is running and create a database for the application:
+
+```sql
+CREATE DATABASE ripple_chat;
+CREATE USER ripple_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE ripple_chat TO ripple_user;
+```
+
+Update the `DATABASE_URL` in your `.env` file accordingly.
+
+### 5. Optional: LiveKit Setup
+
+For audio and video call functionality, set up a LiveKit server locally or use LiveKit Cloud:
+
+- **Local setup**: Follow the [LiveKit self-hosting guide](https://docs.livekit.io/realtime/self-hosting/)
+- **Cloud setup**: Sign up at [LiveKit Cloud](https://cloud.livekit.io/) and get your API credentials
+
+Update the LiveKit-related environment variables in your `.env` file.
+
+**More details on docker-based setup and deployment will be provided in future updates.**
+
 ## Installation
 
-Detailed installation instructions will be provided as the project approaches its first stable release. For now, the codebase serves as a reference implementation.
+The application is currently in active development. Use the local setup instructions above to run the project for development purposes.
 
 ## Contributing
 
