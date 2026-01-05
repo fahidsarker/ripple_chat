@@ -12,25 +12,30 @@ export const storageBucketTags = [
 export type StorageBuckets = (typeof storageBucketTags)[number];
 
 const basePath = env.FILE_STORAGE_PATH;
-export const relativePath = (absolutePath: string) => {
+const relativePath = (absolutePath: string) => {
   return path.relative(basePath, absolutePath);
 };
-export const absolutePath = (relativePath: string) => {
+const absolutePath = (relativePath: string) => {
   return path.join(basePath, relativePath);
 };
 
 const uploadBasePath = path.join(basePath, "uploads");
-const uploadDirs = storageBucketTags.map((tag) =>
-  path.join(uploadBasePath, tag)
-);
-
-export const initStorageDirs = () => {
+const initStorageDirs = () => {
+  const uploadDirs = storageBucketTags.map((tag) =>
+    path.join(uploadBasePath, tag)
+  );
   // upload dirs
   uploadDirs.forEach((fullPath) => {
     if (!fs.existsSync(fullPath)) {
       fs.mkdirSync(fullPath, { recursive: true });
     }
   });
+};
+
+export const storageUtils = {
+  init: initStorageDirs,
+  relativePath,
+  absolutePath,
 };
 
 const createOrReturnDir = (dirPath: string) => {

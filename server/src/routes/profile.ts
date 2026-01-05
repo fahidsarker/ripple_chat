@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { authRequired } from "../middleware/auth";
 import { authService, getUser } from "../services/auth";
 import { apiHandler, queryParams } from "../core/api-handler";
@@ -7,8 +7,8 @@ import { db, tables } from "../db";
 import { and, eq, ilike, not, or } from "drizzle-orm";
 import { users } from "../db/schema";
 import { upload } from "../storage/multer";
-import { relativePath } from "../storage/storage-utils";
 import { getProfileOfUser } from "../services/profile";
+import { createFilesEntriesInDB } from "../services/files";
 
 const router = express.Router();
 
@@ -45,27 +45,18 @@ router.post(
   apiHandler(async (req) => {
     const userId = getUser(req).userId;
 
-    // Check if file was uploaded
     if (!req.file) {
       return Res.error("No file uploaded", 400);
     }
 
-    // Access the uploaded file
     const file = req.file;
-    const fileContent: typeof tables.files.$inferInsert = {
-      uploaderId: userId,
-      parentId: userId,
+    await createFilesEntriesInDB({
+      files: [file],
+      userId,
       bucket: "profile_photos",
-      ext: file.originalname.substring(file.originalname.lastIndexOf(".") + 1),
-      mimeType: file.mimetype,
-      relativePath: relativePath(file.path),
-      size: file.size,
-      originalName: file.originalname,
-      fileType: "image",
-    };
-    await db.transaction(async (tx) => {
-      try {
-        await tx
+      parentType: "user",
+      before: (tx) => {
+        return tx
           .update(tables.files)
           .set({ deleted: true })
           .where(
@@ -75,15 +66,7 @@ router.post(
               eq(tables.files.deleted, false)
             )
           );
-
-        await tx
-          .insert(tables.files)
-          .values(fileContent)
-          .returning({ id: tables.files.id });
-      } catch (error) {
-        console.error("Error updating profile photo:", error);
-        throw error;
-      }
+      },
     });
     return Res.json({ message: "Profile photo updated successfully" });
   })

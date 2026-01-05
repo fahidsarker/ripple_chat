@@ -39,6 +39,9 @@ export const files = pgTable("files", {
     .notNull()
     .references(() => users.id),
   parentId: varchar("parent_id", { length: 255 }).notNull(), // denotes the entity this file is associated with -> user id, message id, etc.
+  parentType: varchar("parent_type", { length: 100 })
+    .$type<"user" | "message" | "chat">()
+    .notNull(), // denotes the type of entity the file is associated with -> "user", "message
   bucket: varchar("bucket", { length: 100 }).$type<StorageBuckets>().notNull(),
   relativePath: varchar("relative_path", { length: 1000 }).notNull(),
   thumbnailPath: varchar("thumbnail_path", { length: 1000 }), // optional thumbnail path for images/videos
@@ -116,6 +119,10 @@ export const usersRelations = relations(users, ({ many }) => ({
   chatMembers: many(chatMembers),
   messages: many(messages),
   calls: many(calls),
+  files: many(files),
+  profilePhotos: many(files, {
+    relationName: "userProfilePhotos",
+  }),
 }));
 
 export const chatsRelations = relations(chats, ({ one, many }) => ({
@@ -139,7 +146,7 @@ export const chatMembersRelations = relations(chatMembers, ({ one }) => ({
   }),
 }));
 
-export const messagesRelations = relations(messages, ({ one }) => ({
+export const messagesRelations = relations(messages, ({ one, many }) => ({
   chat: one(chats, {
     fields: [messages.chatId],
     references: [chats.id],
@@ -147,6 +154,19 @@ export const messagesRelations = relations(messages, ({ one }) => ({
   sender: one(users, {
     fields: [messages.senderId],
     references: [users.id],
+  }),
+  attachments: many(files),
+}));
+
+export const filesRelations = relations(files, ({ one }) => ({
+  uploader: one(users, {
+    fields: [files.uploaderId],
+    references: [users.id],
+  }),
+  parentUser: one(users, {
+    fields: [files.parentId],
+    references: [users.id],
+    relationName: "userProfilePhotos",
   }),
 }));
 

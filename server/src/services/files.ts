@@ -1,7 +1,7 @@
 import { apiError } from "../core/api-error";
-import { db } from "../db";
+import { db, tables } from "../db";
 import { env } from "../env";
-import { absolutePath } from "../storage/storage-utils";
+import { StorageBuckets, storageUtils } from "../storage/storage-utils";
 import jwt from "jsonwebtoken";
 
 type FileJwtPayload = {
@@ -28,7 +28,7 @@ export const getFilePathFromToken = (fileId: string, token: string) => {
   if (now > expiary) {
     throw apiError(400, "File token has expired");
   }
-  return payload.filePath;
+  return storageUtils.absolutePath(payload.filePath);
 };
 
 export const createFileAccessUrlFromPath = (
@@ -41,6 +41,51 @@ export const createFileAccessUrlFromPath = (
     expiary: Date.now() + 3600000, // 1 hour
   } satisfies FileJwtPayload;
 
-  const token = jwt.sign(jwtPayload, env.JWT_SECRET);
+  const token = jwt.sign(jwtPayload, env.JWT_SECRET, {
+    noTimestamp: true,
+  });
   return `${env.SERVER_URL}/api/files/${fileId}?token=${token}`;
+};
+
+export const createFilesEntriesInDB = async <T>({
+  files,
+  userId,
+  before,
+  bucket,
+  parentType,
+  after,
+}: {
+  files: Express.Multer.File[];
+  userId: string;
+  bucket: StorageBuckets;
+  parentType: "user" | "message" | "chat";
+  before?: (tx: (typeof db.transaction)["arguments"][0]) => Promise<void>;
+  after?: (tx: (typeof db.transaction)["arguments"][0]) => Promise<T>;
+}) => {
+  const fileContents = files.map((file) => {
+    return {
+      uploaderId: userId,
+      parentId: userId,
+      parentType: parentType,
+      bucket: bucket,
+      ext: file.originalname.substring(file.originalname.lastIndexOf(".") + 1),
+      mimeType: file.mimetype,
+      relativePath: storageUtils.relativePath(file.path),
+      size: file.size,
+      originalName: file.originalname,
+      fileType: "image",
+    } satisfies typeof tables.files.$inferInsert;
+  });
+
+  return await db.transaction(async (tx) => {
+    if (before) {
+      await before(tx);
+    }
+
+    await tx.insert(tables.files).values(fileContents);
+
+    if (after) {
+      return await after(tx);
+    }
+  });
 };

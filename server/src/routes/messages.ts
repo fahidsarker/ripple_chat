@@ -32,6 +32,19 @@ router.get(
         eq(messages.chatId, chatId),
         search ? ilike(messages.content, `%${search}%`) : undefined
       ),
+      with: {
+        sender: {
+          columns: { id: true, name: true },
+        },
+        attachments: {
+          columns: {
+            id: true,
+            originalName: true,
+            ext: true,
+            relativePath: true,
+          },
+        },
+      },
       orderBy: [desc(messages.createdAt)],
       limit,
       offset,

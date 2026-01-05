@@ -23,12 +23,14 @@ Ripple Chat addresses the need for a straightforward messaging solution without 
 ### Current
 
 - ✅ User authentication
+- ✅ Profile management
+- ✅ File Upload and Token-based access
 
 ### Planned
 
-- 🔄 Profile management
 - 🔄 Group chats and direct messages
 - 🔄 Media sharing (images, videos, files)
+- 🔄 File thumbnail generation and optimisation for delivery
 - 🔄 Real-time messaging with WebSockets
 - 🔄 Responsive design for mobile and desktop
 - 🔄 Push notifications

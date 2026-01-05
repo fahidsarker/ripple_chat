@@ -5,7 +5,7 @@ import { apiHandler } from "../core/api-handler";
 import { Res } from "../core/response";
 import { authRequired } from "../middleware/auth";
 import { getFilePathFromToken } from "../services/files";
-import { absolutePath } from "../storage/storage-utils";
+
 import { apiError } from "../core/api-error";
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.get(
       throw apiError(400, "Invalid or missing token");
     }
 
-    const filePath = absolutePath(getFilePathFromToken(req.params.fid, token));
+    const filePath = getFilePathFromToken(req.params.fid, token);
 
     fs.stat(filePath, (err, stats) => {
       if (err) return res.sendStatus(404);

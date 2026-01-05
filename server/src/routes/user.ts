@@ -1,10 +1,9 @@
 import express, { Request, Response } from "express";
 import { authRequired } from "../middleware/auth";
-import { authService, getUser } from "../services/auth";
 import { apiHandler, queryParams } from "../core/api-handler";
 import { Res } from "../core/response";
 import { db, tables } from "../db";
-import { and, eq, ilike, not, or } from "drizzle-orm";
+import { ilike, or } from "drizzle-orm";
 import { users } from "../db/schema";
 
 const router = express.Router();

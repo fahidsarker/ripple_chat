@@ -14,7 +14,7 @@ import profileRoutes from "./routes/profile";
 import filesRouter from "./routes/files";
 
 import { globalErrorHandler } from "./middleware/global-error-handle";
-import { initStorageDirs } from "./storage/storage-utils";
+import { storageUtils } from "./storage/storage-utils";
 
 const io = new Server(server, {
   cors: {
@@ -25,7 +25,7 @@ const io = new Server(server, {
 
 const PORT = env.SERVER_PORT || 8080;
 
-initStorageDirs();
+storageUtils.init();
 
 // Middleware
 app.use(helmet());
