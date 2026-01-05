@@ -18,6 +18,7 @@ enum ApiPost<T> {
   messages(_messagesRoute),
 
   profileUpdateName('/api/profile/update-name'),
+  profileUpdatePhoto('/api/profile/update-photo'),
   profileUpdatePassword('/api/profile/update-password');
 
   final T path;

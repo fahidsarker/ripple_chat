@@ -38,9 +38,13 @@ class Api {
       final res = await _dio.get<T>(path, queryParameters: queryParameters);
       return _parseResponse<T>(res);
     } on DioException catch (e) {
+      final data = e.response?.data;
+
       return Error(
         ApiError(
-          e.message ?? 'Request Error occurred',
+          data is Map<String, dynamic> && data['message'] is String
+              ? data['message']
+              : e.message ?? 'Request Error occurred',
           statusCode: e.response?.statusCode,
         ),
       );
@@ -55,10 +59,13 @@ class Api {
       final res = await _dio.post<T>(path, data: body);
       return _parseResponse<T>(res);
     } on DioException catch (e) {
-      print(e);
+      final data = e.response?.data;
+
       return Error(
         ApiError(
-          e.message ?? 'Request Error occurred',
+          data is Map<String, dynamic> && data['message'] is String
+              ? data['message']
+              : e.message ?? 'Request Error occurred',
           statusCode: e.response?.statusCode,
         ),
       );
@@ -90,4 +97,9 @@ class ApiError {
   final String message;
   final int? statusCode;
   ApiError(this.message, {this.statusCode});
+
+  @override
+  String toString() {
+    return '${statusCode ?? ''}: $message';
+  }
 }

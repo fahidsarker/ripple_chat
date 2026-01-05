@@ -1,5 +1,12 @@
-import { pgTable, varchar, timestamp, boolean } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  varchar,
+  timestamp,
+  boolean,
+  doublePrecision,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { StorageBuckets } from "../storage/storage-utils";
 
 const primaryId = (name: string) =>
   varchar(name, { length: 255 })
@@ -24,6 +31,29 @@ export const chats = pgTable("chats", {
     .notNull()
     .references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const files = pgTable("files", {
+  id: primaryId("id"),
+  uploaderId: varchar("uploader_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  parentId: varchar("parent_id", { length: 255 }).notNull(), // denotes the entity this file is associated with -> user id, message id, etc.
+  bucket: varchar("bucket", { length: 100 }).$type<StorageBuckets>().notNull(),
+  relativePath: varchar("relative_path", { length: 1000 }).notNull(),
+  thumbnailPath: varchar("thumbnail_path", { length: 1000 }), // optional thumbnail path for images/videos
+  originalName: varchar("original_name", { length: 255 }).notNull(),
+  size: doublePrecision("size").notNull(),
+  mimeType: varchar("mime_type", { length: 255 }).notNull(),
+  ext: varchar("ext", { length: 50 }).notNull(),
+  width: doublePrecision("width"),
+  height: doublePrecision("height"),
+  duration: doublePrecision("duration"), // for audio/video files
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  fileType: varchar("file_type", { length: 50 })
+    .$type<"image" | "video" | "audio" | "document" | "other">()
+    .notNull(),
+  deleted: boolean("deleted").default(false).notNull(), // used to soft delete files -> a script can be run later to permanently delete files marked as deleted
 });
 
 // Chat members table

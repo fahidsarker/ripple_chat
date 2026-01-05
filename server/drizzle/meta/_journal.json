@@ -8,6 +8,34 @@
       "when": 1767491559079,
       "tag": "0000_good_cardiac",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1767577923999,
+      "tag": "0001_low_secret_warriors",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1767578217113,
+      "tag": "0002_melodic_sally_floyd",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1767578795004,
+      "tag": "0003_warm_mandroid",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1767596940289,
+      "tag": "0004_eager_randall_flagg",
+      "breakpoints": true
     }
   ]
 }

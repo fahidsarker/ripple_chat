@@ -1,0 +1,1 @@
+ALTER TABLE "files" ADD COLUMN "file_type" varchar(50) NOT NULL;

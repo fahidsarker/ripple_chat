@@ -11,8 +11,10 @@ import chatRoutes from "./routes/chats";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import profileRoutes from "./routes/profile";
+import filesRouter from "./routes/files";
 
 import { globalErrorHandler } from "./middleware/global-error-handle";
+import { initStorageDirs } from "./storage/storage-utils";
 
 const io = new Server(server, {
   cors: {
@@ -22,6 +24,8 @@ const io = new Server(server, {
 });
 
 const PORT = env.SERVER_PORT || 8080;
+
+initStorageDirs();
 
 // Middleware
 app.use(helmet());
@@ -81,6 +85,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/files", filesRouter);
 
 // 404 handler
 app.use("*", (req, res) => {

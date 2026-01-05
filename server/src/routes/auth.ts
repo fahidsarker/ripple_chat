@@ -9,6 +9,7 @@ import {
   RegisterInput,
   LoginInput,
 } from "../validators";
+import { getProfileOfUser } from "../services/profile";
 
 const router = express.Router();
 
@@ -78,20 +79,24 @@ router.post("/login", async (req: Request, res: Response) => {
     const { email, password } = validatedData;
 
     // Find user
-    const [user] = await db
-      .select()
+    const [credentials] = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        passwordHash: users.passwordHash,
+      })
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
 
-    if (!user) {
+    if (!credentials) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
     // Verify password
     const isValidPassword = await authService.comparePassword(
       password,
-      user.passwordHash
+      credentials.passwordHash
     );
 
     if (!isValidPassword) {
@@ -100,18 +105,13 @@ router.post("/login", async (req: Request, res: Response) => {
 
     // Generate token
     const token = authService.generateToken({
-      userId: user.id,
-      email: user.email,
+      userId: credentials.id,
+      email: credentials.email,
     });
 
     res.json({
       message: "Login successful",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        createdAt: user.createdAt,
-      },
+      user: await getProfileOfUser(credentials.id),
       token,
     });
   } catch (error: any) {

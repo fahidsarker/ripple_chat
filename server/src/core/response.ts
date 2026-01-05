@@ -62,6 +62,10 @@ export class Res {
     return Res.json({ message });
   }
 
+  static none() {
+    return new Res(() => {});
+  }
+
   static error(err: string, code: ErrorStatusCodes = 500) {
     return new Res(() => {
       throw apiError(code, err);

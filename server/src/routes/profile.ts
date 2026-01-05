@@ -6,6 +6,9 @@ import { Res } from "../core/response";
 import { db, tables } from "../db";
 import { and, eq, ilike, not, or } from "drizzle-orm";
 import { users } from "../db/schema";
+import { upload } from "../storage/multer";
+import { relativePath } from "../storage/storage-utils";
+import { getProfileOfUser } from "../services/profile";
 
 const router = express.Router();
 
@@ -15,20 +18,8 @@ router.get(
   "/",
   apiHandler(async (req) => {
     const userId = getUser(req).userId;
-    const userData = await db
-      .select({
-        id: tables.users.id,
-        name: tables.users.name,
-        email: tables.users.email,
-        createdAt: tables.users.createdAt,
-      })
-      .from(tables.users)
-      .where(eq(tables.users.id, userId))
-      .limit(1);
-    if (userData.length === 0) {
-      return Res.error("User not found", 404);
-    }
-    return Res.json({ user: userData[0] });
+    const profile = await getProfileOfUser(userId);
+    return Res.json({ user: profile });
   })
 );
 
@@ -45,6 +36,56 @@ router.post(
       .set({ name: name.trim() })
       .where(eq(tables.users.id, userId));
     return Res.json({ message: "Name updated successfully" });
+  })
+);
+
+router.post(
+  "/update-photo",
+  upload.single("file"),
+  apiHandler(async (req) => {
+    const userId = getUser(req).userId;
+
+    // Check if file was uploaded
+    if (!req.file) {
+      return Res.error("No file uploaded", 400);
+    }
+
+    // Access the uploaded file
+    const file = req.file;
+    const fileContent: typeof tables.files.$inferInsert = {
+      uploaderId: userId,
+      parentId: userId,
+      bucket: "profile_photos",
+      ext: file.originalname.substring(file.originalname.lastIndexOf(".") + 1),
+      mimeType: file.mimetype,
+      relativePath: relativePath(file.path),
+      size: file.size,
+      originalName: file.originalname,
+      fileType: "image",
+    };
+    await db.transaction(async (tx) => {
+      try {
+        await tx
+          .update(tables.files)
+          .set({ deleted: true })
+          .where(
+            and(
+              eq(tables.files.parentId, userId),
+              eq(tables.files.bucket, "profile_photos"),
+              eq(tables.files.deleted, false)
+            )
+          );
+
+        await tx
+          .insert(tables.files)
+          .values(fileContent)
+          .returning({ id: tables.files.id });
+      } catch (error) {
+        console.error("Error updating profile photo:", error);
+        throw error;
+      }
+    });
+    return Res.json({ message: "Profile photo updated successfully" });
   })
 );
 
