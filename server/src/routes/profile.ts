@@ -50,24 +50,29 @@ router.post(
     }
 
     const file = req.file;
-    await createFilesEntriesInDB({
-      files: [file],
-      userId,
-      bucket: "profile_photos",
-      parentType: "user",
-      before: (tx) => {
-        return tx
-          .update(tables.files)
-          .set({ deleted: true })
-          .where(
-            and(
-              eq(tables.files.parentId, userId),
-              eq(tables.files.bucket, "profile_photos"),
-              eq(tables.files.deleted, false)
-            )
-          );
-      },
-    });
+    try {
+      await createFilesEntriesInDB({
+        files: [file],
+        userId,
+        bucket: "profile_photos",
+        parentType: "user",
+        before: (tx) => {
+          return tx
+            .update(tables.files)
+            .set({ deleted: true })
+            .where(
+              and(
+                eq(tables.files.parentId, userId),
+                eq(tables.files.bucket, "profile_photos"),
+                eq(tables.files.deleted, false)
+              )
+            );
+        },
+      });
+    } catch (error) {
+      console.error("Error updating profile photo:", error);
+      throw error;
+    }
     return Res.json({ message: "Profile photo updated successfully" });
   })
 );

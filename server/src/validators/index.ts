@@ -16,7 +16,7 @@ export const loginSchema = z.object({
 // Chat schemas
 export const createChatSchema = z.object({
   isGroup: z.boolean().default(false),
-  title: z.string().min(1).optional(),
+  title: z.string().optional(),
   memberIds: z
     .array(z.string().min(1, "Member ID must be a non-empty string"))
     .min(1, "At least one member is required"),

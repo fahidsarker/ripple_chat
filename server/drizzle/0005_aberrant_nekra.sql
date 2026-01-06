@@ -1,0 +1,1 @@
+ALTER TABLE "files" ADD COLUMN "parent_type" varchar(100) NOT NULL;

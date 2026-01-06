@@ -22,28 +22,43 @@ class Toolbar extends HookConsumerWidget {
     }
 
     final toolbarItems = [
-      (title: 'Chats', icon: Icons.chat_bubble, href: '/chat', onClick: null),
-      (title: 'Calls', icon: Icons.call, href: '/calls', onClick: null),
+      (
+        title: 'Chats',
+        icon: Icon(Icons.chat_bubble),
+        href: '/chat',
+        onClick: null,
+      ),
+      (title: 'Calls', icon: Icon(Icons.call), href: '/calls', onClick: null),
       (
         title: 'Contacts',
-        icon: Icons.contacts,
+        icon: Icon(Icons.contacts),
         href: '/contacts',
         onClick: null,
       ),
-      (title: 'Files', icon: Icons.folder, href: '/files', onClick: null),
-      (title: '_', icon: Icons.more_horiz, href: null, onClick: null),
-      (title: 'Settings', icon: Icons.settings, href: null, onClick: null),
+      (title: 'Files', icon: Icon(Icons.folder), href: '/files', onClick: null),
+      (title: '_', icon: Icon(Icons.more_horiz), href: null, onClick: null),
+      (
+        title: 'Settings',
+        icon: Icon(Icons.settings),
+        href: null,
+        onClick: null,
+      ),
       (
         title: auth.user.name,
-        icon: Icons.person,
+        icon: auth.user.profilePhotoUrl == null
+            ? Icon(Icons.person)
+            : CircleAvatar(
+                backgroundImage: NetworkImage(auth.user.profilePhotoUrl!),
+                radius: 12,
+              ),
         href: '/profile',
         onClick: null,
       ),
       (
         title: expanded.value ? 'Collapse' : 'Expand',
         icon: expanded.value
-            ? FontAwesomeIcons.angleLeft
-            : FontAwesomeIcons.angleRight,
+            ? Icon(FontAwesomeIcons.angleLeft)
+            : Icon(FontAwesomeIcons.angleRight),
         href: null,
         onClick: () {
           expanded.value = !expanded.value;
@@ -74,14 +89,20 @@ class Toolbar extends HookConsumerWidget {
                 }
               },
               child: SizedBox(
-                width: 120,
+                width: context.isUltraWide ? 200 : 120,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(item.icon),
+                    item.icon,
                     const SizedBox(width: 8),
-                    Text(item.title),
+                    Expanded(
+                      child: Text(
+                        item.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -94,7 +115,7 @@ class Toolbar extends HookConsumerWidget {
                     : Colors.transparent,
                 foregroundColor: context.c.textSecondary,
               ),
-              icon: Icon(item.icon),
+              icon: item.icon,
               tooltip: item.title,
               onPressed: () {
                 if (item.onClick != null) {
