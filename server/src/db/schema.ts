@@ -6,7 +6,6 @@ import {
   doublePrecision,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { StorageBuckets } from "../storage/storage-utils";
 
 const primaryId = (name: string) =>
   varchar(name, { length: 255 })
@@ -42,7 +41,6 @@ export const files = pgTable("files", {
   parentType: varchar("parent_type", { length: 100 })
     .$type<"user" | "message" | "chat">()
     .notNull(), // denotes the type of entity the file is associated with -> "user", "message
-  bucket: varchar("bucket", { length: 100 }).$type<StorageBuckets>().notNull(),
   relativePath: varchar("relative_path", { length: 1000 }).notNull(),
   thumbnailPath: varchar("thumbnail_path", { length: 1000 }), // optional thumbnail path for images/videos
   originalName: varchar("original_name", { length: 255 }).notNull(),

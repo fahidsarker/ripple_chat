@@ -1,7 +1,7 @@
 import { apiError } from "../core/api-error";
 import { db, tables } from "../db";
 import { env } from "../env";
-import { StorageBuckets, storageUtils } from "../storage/storage-utils";
+import { storageService } from "./storage";
 import jwt from "jsonwebtoken";
 
 type FileJwtPayload = {
@@ -28,7 +28,7 @@ export const getFilePathFromToken = (fileId: string, token: string) => {
   if (now > expiary) {
     throw apiError(400, "File token has expired");
   }
-  return storageUtils.absolutePath(payload.filePath);
+  return storageService.absolutePath(payload.filePath);
 };
 
 export const createFileAccessUrlFromPath = (
@@ -51,13 +51,11 @@ export const createFilesEntriesInDB = async <T>({
   files,
   userId,
   before,
-  bucket,
   parentType,
   after,
 }: {
   files: Express.Multer.File[];
   userId: string;
-  bucket: StorageBuckets;
   parentType: "user" | "message" | "chat";
   before?: (tx: (typeof db.transaction)["arguments"][0]) => Promise<void>;
   after?: (tx: (typeof db.transaction)["arguments"][0]) => Promise<T>;
@@ -67,10 +65,9 @@ export const createFilesEntriesInDB = async <T>({
       uploaderId: userId,
       parentId: userId,
       parentType: parentType,
-      bucket: bucket,
       ext: file.originalname.substring(file.originalname.lastIndexOf(".") + 1),
       mimeType: file.mimetype,
-      relativePath: storageUtils.relativePath(file.path),
+      relativePath: storageService.relativePath(file.path),
       size: file.size,
       originalName: file.originalname,
       fileType: "image",

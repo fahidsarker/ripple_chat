@@ -6,7 +6,7 @@ import { Res } from "../core/response";
 import { db, tables } from "../db";
 import { and, eq, ilike, not, or } from "drizzle-orm";
 import { users } from "../db/schema";
-import { upload } from "../storage/multer";
+import { upload } from "../core/multer";
 import { getProfileOfUser } from "../services/profile";
 import { createFilesEntriesInDB } from "../services/files";
 
