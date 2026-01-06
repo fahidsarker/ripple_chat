@@ -4,7 +4,7 @@ import mime from "mime";
 import { apiHandler } from "../core/api-handler";
 import { Res } from "../core/response";
 import { authRequired } from "../middleware/auth";
-import { getFilePathFromToken } from "../services/files";
+import { FILE_TOKEN_EXPIRY_MS, getFilePathFromToken } from "../services/files";
 
 import { apiError } from "../core/api-error";
 const router = express.Router();
@@ -28,7 +28,15 @@ router.get(
         "Content-Type",
         mime.getType(filePath) || "application/octet-stream"
       );
-
+      res.setHeader(
+        "Cache-Control",
+        `public, max-age=${FILE_TOKEN_EXPIRY_MS / 1000}`
+      ); // 12 hours
+      res.setHeader("Last-Modified", stats.mtime.toUTCString());
+      res.setHeader(
+        "ETag",
+        `"${stats.size}-${stats.mtime.getTime()}-${req.params.fid}"`
+      );
       fs.createReadStream(filePath).pipe(res);
     });
 

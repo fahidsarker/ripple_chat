@@ -1,3 +1,4 @@
+import { cache } from "../caching/cache";
 import { apiError } from "../core/api-error";
 import { db, tables } from "../db";
 import { env } from "../env";
@@ -9,6 +10,8 @@ type FileJwtPayload = {
   fileId: string;
   expiary: number;
 };
+
+export const FILE_TOKEN_EXPIRY_MS = 12 * 60 * 60 * 1000; // 12 hours
 
 export const getFilePathFromToken = (fileId: string, token: string) => {
   let payload: FileJwtPayload;
@@ -31,21 +34,26 @@ export const getFilePathFromToken = (fileId: string, token: string) => {
   return storageService.absolutePath(payload.filePath);
 };
 
-export const createFileAccessUrlFromPath = (
-  fileId: string,
-  filePath: string
-): string => {
-  const jwtPayload = {
-    filePath,
-    fileId,
-    expiary: Date.now() + 3600000, // 1 hour
-  } satisfies FileJwtPayload;
+// for subsequent calls with same fileId and filePath, cache the result for 60 minutes
+// to avoid generating multiple JWTs for the same file
+export const createFileAccessUrlFromPath = cache(
+  async (fileId: string, filePath: string) => {
+    const jwtPayload = {
+      filePath,
+      fileId,
+      expiary: Date.now() + FILE_TOKEN_EXPIRY_MS,
+    } satisfies FileJwtPayload;
 
-  const token = jwt.sign(jwtPayload, env.JWT_SECRET, {
-    noTimestamp: true,
-  });
-  return `${env.SERVER_URL}/api/files/${fileId}?token=${token}`;
-};
+    const token = jwt.sign(jwtPayload, env.JWT_SECRET, {
+      noTimestamp: true,
+    });
+    return `${env.SERVER_URL}/api/files/${fileId}?token=${token}`;
+  },
+  {
+    keyParts: (fileId: string, filePath: string) => [fileId, filePath],
+    ttl: 60 * 60, // 60 minutes
+  }
+);
 
 export const createFilesEntriesInDB = async <T>({
   files,

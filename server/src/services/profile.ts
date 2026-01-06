@@ -53,7 +53,10 @@ export const getProfileOfUser = async (userId: string) => {
   return {
     ...user,
     profilePhotoUrl: profilePhoto
-      ? createFileAccessUrlFromPath(profilePhoto.id, profilePhoto.relativePath)
+      ? await createFileAccessUrlFromPath(
+          profilePhoto.id,
+          profilePhoto.relativePath
+        )
       : null,
   };
 };

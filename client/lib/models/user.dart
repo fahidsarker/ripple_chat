@@ -1,3 +1,5 @@
+import 'package:ripple_client/extensions/map.dart';
+
 class User {
   final String id;
   final String name;
@@ -13,10 +15,10 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
-      profilePhotoUrl: json['profilePhotoUrl'] as String?,
+      id: json.get('id'),
+      name: json.get('name'),
+      email: json.get('email'),
+      profilePhotoUrl: json.get('profilePhotoUrl'),
     );
   }
 

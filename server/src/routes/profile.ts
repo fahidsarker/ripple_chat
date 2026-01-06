@@ -54,7 +54,6 @@ router.post(
       await createFilesEntriesInDB({
         files: [file],
         userId,
-        bucket: "profile_photos",
         parentType: "user",
         before: (tx) => {
           return tx
@@ -63,7 +62,7 @@ router.post(
             .where(
               and(
                 eq(tables.files.parentId, userId),
-                eq(tables.files.bucket, "profile_photos"),
+                eq(tables.files.parentType, "user"),
                 eq(tables.files.deleted, false)
               )
             );
