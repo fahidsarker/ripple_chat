@@ -50,7 +50,7 @@ final class ChatListProvider
   }
 }
 
-String _$chatListHash() => r'dab74f8894f0b05cf4d5fe006f2293770942fd79';
+String _$chatListHash() => r'83fe3e6be017418e3eca594f3cc97aac37486dc9';
 
 final class ChatListFamily extends $Family
     with

@@ -35,11 +35,6 @@ class AppColors {
   Color get error => Color(0xFFEF4444);
   Color get info => Color(0xFF3B82F6);
 
-  // Chat specific colors
-  Color get messageBubbleUser => primary;
-  Color get messageBubbleOther => Color(0xFFE5E7EB);
-  Color get messageBubbleOtherDark => Color(0xFF374151);
-
   // Utility colors
   Color get transparent => Colors.transparent;
   Color get overlay => Color(0x80000000);

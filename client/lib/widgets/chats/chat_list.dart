@@ -6,6 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:ripple_client/core/theme/app_typography.dart';
 import 'package:ripple_client/extensions/color.dart';
 import 'package:ripple_client/extensions/context.dart';
+import 'package:ripple_client/extensions/object.dart';
+import 'package:ripple_client/extensions/string.dart';
 import 'package:ripple_client/providers/chat_provider.dart';
 import 'package:ripple_client/providers/state_provider.dart';
 import 'package:ripple_client/widgets/paginated_list_view.dart';
@@ -84,8 +86,15 @@ class ChatListView extends ConsumerWidget {
             ),
           ),
           title: Text(chats[i].title ?? 'User'),
-          subtitle: Text(chats[i].id),
+          subtitle: Row(
+            children: [
+              Expanded(
+                child: Text(chats[i].lastMessageSenderContent ?? 'New Chat'),
+              ),
+            ],
+          ),
           selected: chats[i].id == selectedChatId,
+          selectedColor: context.c.textPrimary,
           selectedTileColor: context.c.textSecondary.wOpacity(0.1),
           onTap: () {
             context.go('/chat/${chats[i].id}');

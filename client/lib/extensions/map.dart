@@ -20,7 +20,7 @@ extension MapExtV<K, V> on Map<K, V> {
     );
   }
 
-  X getMap<T, X>(K key, X Function(T) mapper, [T? defaultValue]) {
+  X getAndMap<T, X>(K key, X Function(T) mapper, [T? defaultValue]) {
     final V? value = this[key];
     try {
       if (value is T) {

@@ -4,7 +4,7 @@ import { getUser } from "../services/auth";
 import { apiHandler, queryParams } from "../core/api-handler";
 import { Res } from "../core/response";
 import { db } from "../db";
-import { messages } from "../db/schema";
+import { messages, files } from "../db/schema";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { hasUserAccessToChat } from "../services/chat";
 import { upload } from "../core/multer";
@@ -35,6 +35,7 @@ router.get(
           columns: { id: true, name: true },
         },
         attachments: {
+          where: and(eq(files.parentType, "message")),
           columns: {
             id: true,
             originalName: true,

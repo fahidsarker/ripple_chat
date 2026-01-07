@@ -154,7 +154,9 @@ export const messagesRelations = relations(messages, ({ one, many }) => ({
     fields: [messages.senderId],
     references: [users.id],
   }),
-  attachments: many(files),
+  attachments: many(files, {
+    relationName: "messageAttachments",
+  }),
 }));
 
 export const filesRelations = relations(files, ({ one }) => ({
@@ -166,6 +168,11 @@ export const filesRelations = relations(files, ({ one }) => ({
     fields: [files.parentId],
     references: [users.id],
     relationName: "userProfilePhotos",
+  }),
+  parentMessage: one(messages, {
+    fields: [files.parentId],
+    references: [messages.id],
+    relationName: "messageAttachments",
   }),
 }));
 
