@@ -83,9 +83,9 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
               GoRoute(path: '/chat/new', builder: (_, __) => NewChatScreen()),
               GoRoute(
-                path: '/chat/:id',
+                path: '/chat/:cid',
                 builder: (_, state) =>
-                    MessagingScreen(chatId: state.pathParameters['id']!),
+                    MessagingScreen(chatId: state.pathParameters['cid']!),
               ),
             ],
           ),

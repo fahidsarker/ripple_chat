@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:ripple_client/core/theme/app_colors.dart';
+import 'package:solid_shared_pref/solid_shared_pref.dart';
+
+final themeModePref = StringPreference('--theme-mode', ThemeMode.system.name);
+
+ThemeMode getThemeModeFromString(String mode) {
+  switch (mode) {
+    case 'light':
+      return ThemeMode.light;
+    case 'dark':
+      return ThemeMode.dark;
+    case 'system':
+    default:
+      return ThemeMode.system;
+  }
+}
 
 /// Theme provider to manage app theme state
 class ThemeProvider with ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode _themeMode = getThemeModeFromString(themeModePref.value);
 
   /// Current theme mode
   ThemeMode get themeMode => _themeMode;
@@ -21,7 +36,18 @@ class ThemeProvider with ChangeNotifier {
   void setThemeMode(ThemeMode mode) {
     if (_themeMode == mode) return;
     _themeMode = mode;
+    themeModePref.value = mode.name;
     notifyListeners();
+  }
+
+  void toggleThemeMode() {
+    if (_themeMode == ThemeMode.light) {
+      setThemeMode(ThemeMode.dark);
+    } else if (_themeMode == ThemeMode.dark) {
+      setThemeMode(ThemeMode.system);
+    } else {
+      setThemeMode(ThemeMode.light);
+    }
   }
 
   /// Toggle between light and dark theme

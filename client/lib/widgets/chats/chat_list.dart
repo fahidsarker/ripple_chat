@@ -4,6 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:ripple_client/core/theme/app_typography.dart';
+import 'package:ripple_client/extensions/color.dart';
+import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/providers/chat_provider.dart';
 import 'package:ripple_client/providers/state_provider.dart';
 import 'package:ripple_client/widgets/paginated_list_view.dart';
@@ -35,6 +37,7 @@ class ChatList extends ConsumerWidget {
           prefixIcon: Icon(FontAwesomeIcons.magnifyingGlass),
           onChanged: (q) => ref.read(_chatQueryState.notifier).debounceSet(q),
         ),
+        SizedBox(height: 16),
         Expanded(child: ChatListView()),
       ],
     );
@@ -46,6 +49,7 @@ class ChatListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedChatId = context.router.pathParameters['cid'];
     final query = ref.watch(_chatQueryState).toLowerCase();
     final provider = chatListProvider(search: query);
     final chatResNotifier = ref.watch(provider.notifier);
@@ -81,6 +85,8 @@ class ChatListView extends ConsumerWidget {
           ),
           title: Text(chats[i].title ?? 'User'),
           subtitle: Text(chats[i].id),
+          selected: chats[i].id == selectedChatId,
+          selectedTileColor: context.c.textSecondary.wOpacity(0.1),
           onTap: () {
             context.go('/chat/${chats[i].id}');
           },

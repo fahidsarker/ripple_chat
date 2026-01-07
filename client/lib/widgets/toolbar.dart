@@ -7,6 +7,18 @@ import 'package:ripple_client/extensions/color.dart';
 import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/screens/error_screen.dart';
+import 'package:ripple_client/utils.dart';
+
+Icon themeModeIcon(ThemeMode mode) {
+  switch (mode) {
+    case ThemeMode.system:
+      return Icon(Icons.brightness_auto);
+    case ThemeMode.light:
+      return Icon(Icons.wb_sunny);
+    case ThemeMode.dark:
+      return Icon(Icons.nights_stay);
+  }
+}
 
 class Toolbar extends HookConsumerWidget {
   const Toolbar({super.key});
@@ -15,6 +27,7 @@ class Toolbar extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final expanded = useState(false);
     final currentPath = GoRouterState.of(context).fullPath ?? 'xx';
+    final themeProvider = context.tp;
 
     final auth = ref.watch(authProvider);
     if (auth == null) {
@@ -37,6 +50,12 @@ class Toolbar extends HookConsumerWidget {
       ),
       (title: 'Files', icon: Icon(Icons.folder), href: '/files', onClick: null),
       (title: '_', icon: Icon(Icons.more_horiz), href: null, onClick: null),
+      (
+        title: capitalize(themeProvider.themeMode.name),
+        icon: themeModeIcon(themeProvider.themeMode),
+        href: null,
+        onClick: () => themeProvider.toggleThemeMode(),
+      ),
       (
         title: 'Settings',
         icon: Icon(Icons.settings),
