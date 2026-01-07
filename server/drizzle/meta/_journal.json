@@ -43,6 +43,13 @@
       "when": 1767665481731,
       "tag": "0005_aberrant_nekra",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1767779892429,
+      "tag": "0006_sturdy_yellow_claw",
+      "breakpoints": true
     }
   ]
 }

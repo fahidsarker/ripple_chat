@@ -28,16 +28,18 @@ Ripple Chat addresses the need for a straightforward messaging solution without 
 
 ### Planned
 
-- 🔄 Group chats and direct messages
-- 🔄 Real-time messaging with WebSockets
-- 🔄 Message read receipts and typing indicators
-- 🔄 User presence (online/offline status)
-- 🔄 Media sharing (images, videos, files)
-- 🔄 Responsive design for mobile and desktop
-- 🔄 File thumbnail generation and optimisation for delivery
-- 🔄 Audio and video calls (via LiveKit integration)
-- 🔄 Push notifications
-- 🔄 End-to-end encryption for secure communication
+- 🔄 Direct messages
+- 📝 Send attachments with messages
+- 📝 Real-time messaging with WebSockets
+- 📝 Message read receipts and typing indicators
+- 📝 Group chats
+- 📝 User presence (online/offline status)
+- 📝 Media sharing (images, videos, files)
+- 📝 Responsive design for mobile and desktop
+- 📝 File thumbnail generation and optimisation for delivery
+- 📝 Audio and video calls (via LiveKit integration)
+- 📝 Push notifications
+- 📝 End-to-end encryption for secure communication
 
 ## Architecture
 

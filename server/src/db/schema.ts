@@ -4,6 +4,7 @@ import {
   timestamp,
   boolean,
   doublePrecision,
+  text,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -77,7 +78,7 @@ export const messages = pgTable("messages", {
   senderId: varchar("sender_id", { length: 255 })
     .notNull()
     .references(() => users.id),
-  content: varchar("content", { length: 1000 }).notNull(),
+  content: text().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

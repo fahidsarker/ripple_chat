@@ -1,9 +1,8 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import fs from "fs";
 import mime from "mime";
 import { apiHandler } from "../core/api-handler";
 import { Res } from "../core/response";
-import { authRequired } from "../middleware/auth";
 import { FILE_TOKEN_EXPIRY_MS, getFilePathFromToken } from "../services/files";
 
 import { apiError } from "../core/api-error";

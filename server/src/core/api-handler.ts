@@ -13,6 +13,7 @@ export function apiHandler(fn: CKExpressHandler) {
       const response = await fn(req, res);
       return response.handle(req, res);
     } catch (err) {
+      console.error("API Handler Error:", err);
       next(err);
     }
   };

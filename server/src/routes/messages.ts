@@ -4,23 +4,21 @@ import { getUser } from "../services/auth";
 import { apiHandler, queryParams } from "../core/api-handler";
 import { Res } from "../core/response";
 import { db } from "../db";
-import { chatMembers, chats, messages, users } from "../db/schema";
-import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
-import { CreateChatInput, createChatSchema } from "../validators";
+import { messages } from "../db/schema";
+import { and, desc, eq, ilike } from "drizzle-orm";
+import { hasUserAccessToChat } from "../services/chat";
+import { upload } from "../core/multer";
+import { sendMessageSchema } from "../validators";
+import { createNewMessage } from "../services/message";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 router.use(authRequired);
 router.get(
   "/",
   apiHandler(async (req: Request) => {
     const chatId = req.params.cid;
     const userId = getUser(req).userId;
-    const hasAccess = await db.query.chatMembers.findFirst({
-      where: and(
-        eq(chatMembers.chatId, chatId),
-        eq(chatMembers.userId, userId)
-      ),
-    });
+    const hasAccess = await hasUserAccessToChat(chatId, userId);
 
     if (!hasAccess) {
       return Res.error("Access denied", 403);
@@ -51,6 +49,26 @@ router.get(
     });
 
     return Res.json({ messages: chatMessages });
+  })
+);
+
+router.post(
+  "/",
+  upload.array("attachments"),
+  apiHandler(async (req: Request) => {
+    const body = sendMessageSchema.safeParse(req.body);
+    if (!body.success) {
+      return Res.error("Invalid input", 400);
+    }
+
+    const message = await createNewMessage({
+      ...body.data,
+      chatId: req.params.cid,
+      userId: getUser(req).userId,
+    });
+    return Res.json({
+      message,
+    });
   })
 );
 

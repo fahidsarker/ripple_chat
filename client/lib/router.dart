@@ -82,7 +82,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                     Center(child: Text('Select a chat to start messaging')),
               ),
               GoRoute(path: '/chat/new', builder: (_, __) => NewChatScreen()),
-              GoRoute(path: '/chat/:id', builder: (_, __) => MessagingScreen()),
+              GoRoute(
+                path: '/chat/:id',
+                builder: (_, state) =>
+                    MessagingScreen(chatId: state.pathParameters['id']!),
+              ),
             ],
           ),
           GoRoute(path: '/profile', builder: (_, __) => ProfileScreen()),

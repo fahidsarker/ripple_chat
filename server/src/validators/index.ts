@@ -23,10 +23,7 @@ export const createChatSchema = z.object({
 });
 
 export const sendMessageSchema = z.object({
-  content: z
-    .string()
-    .min(1, "Message content is required")
-    .max(1000, "Message too long"),
+  content: z.string().min(1, "Message content is required"),
 });
 
 export const updateMessageStatusSchema = z.object({

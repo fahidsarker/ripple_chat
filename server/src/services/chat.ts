@@ -1,8 +1,9 @@
-import { inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { db } from "../db";
 import { chatMembers, chats, users } from "../db/schema";
 import { CreateChatInput } from "../validators";
 import { Res } from "../core/response";
+import { cache, revalidateTag } from "../caching/cache";
 
 export const createNewChat = async (
   data: CreateChatInput,
@@ -41,4 +42,10 @@ export const createNewChat = async (
 
   await db.insert(chatMembers).values(memberInserts);
   return newChat;
+};
+
+export const hasUserAccessToChat = async (chatId: string, userId: string) => {
+  return await db.query.chatMembers.findFirst({
+    where: and(eq(chatMembers.chatId, chatId), eq(chatMembers.userId, userId)),
+  });
 };
