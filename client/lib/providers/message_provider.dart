@@ -43,25 +43,25 @@ class MessageList extends _$MessageList {
     return messages;
   }
 
-  // Future<void> nextPage() {
-  //   if (isLoadingMore.value || !hasMore.value) {
-  //     return Future.value();
-  //   }
-  //   final newOffset = offset + (pageSize);
-  //   isLoadingMore.value = true;
-  //   return fetchChats(newOffset)
-  //       .then((chats) {
-  //         offset = newOffset;
-  //         state = AsyncValue.data([...state.value ?? [], ...chats]);
-  //         if (chats.length < (pageSize)) {
-  //           hasMore.value = false;
-  //         }
-  //       })
-  //       .catchError((error, stackTrace) {
-  //         state = AsyncValue.error(error, stackTrace);
-  //       })
-  //       .whenComplete(() {
-  //         isLoadingMore.value = false;
-  //       });
-  // }
+  Future<void> nextPage() {
+    if (isLoadingMore.value || !hasMore.value) {
+      return Future.value();
+    }
+    final newOffset = offset + (pageSize);
+    isLoadingMore.value = true;
+    return fetchMessages(newOffset)
+        .then((messages) {
+          offset = newOffset;
+          state = AsyncValue.data([...state.value ?? [], ...messages]);
+          if (messages.length < (pageSize)) {
+            hasMore.value = false;
+          }
+        })
+        .catchError((error, stackTrace) {
+          state = AsyncValue.error(error, stackTrace);
+        })
+        .whenComplete(() {
+          isLoadingMore.value = false;
+        });
+  }
 }
