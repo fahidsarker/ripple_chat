@@ -136,6 +136,7 @@ Navigate to the client directory and install dependencies:
 ```bash
 cd ../client
 flutter pub get
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 Run the Flutter application:

@@ -49,3 +49,5 @@ app.*.map.json
 .DS_Store
 /local.properties
 .vscode/
+
+*.g.dart

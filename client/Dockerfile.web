@@ -18,7 +18,10 @@ RUN flutter pub get
 COPY . .
 
 # Enable web support
-RUN flutter config --enable-web
+RUN flutter config --enable-
+    
+# Build runner to generate necessary files
+RUN dart run build_runner build --delete-conflicting-outputs
 
 # Build the Flutter web app
 RUN flutter build web --release --web-renderer html
