@@ -62,8 +62,11 @@ app.get("/ping", (req, res) => {
     pong: true,
     timestamp: new Date().toISOString(),
     apiVersion: "1.0.0",
-    allowCalls: true,
-    allowReg: true,
+    allowsCalls: true,
+    allowsFileUploads: true,
+    allowsRegistration: true,
+    httpUrl: env.SERVER_URL,
+    wsUrl: env.WS_URL,
   });
 });
 

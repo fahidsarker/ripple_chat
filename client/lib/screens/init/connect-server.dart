@@ -189,23 +189,17 @@ class ConnectServerScreen extends HookConsumerWidget {
                                       if (pedningReq.value) return;
                                       pedningReq.value = true;
                                       final urlTxt = textController.text;
-                                      final uri = await verifyServerUrl(
-                                        context,
-                                        urlTxt,
-                                      );
-                                      if (!context.mounted) {
-                                        return;
-                                      }
-                                      if (uri != null) {
-                                        ref
-                                            .read(baseApiRouteProvider.notifier)
-                                            .set(uri);
-                                        context.go('/login');
+
+                                      final error = await ref
+                                          .read(apiConfigProvider.notifier)
+                                          .connectServer(urlTxt);
+                                      if (!context.mounted) return;
+                                      if (error != null) {
+                                        context.showSnackBar(error);
                                       } else {
-                                        context.showSnackBar(
-                                          'Failed to connect to server. Please check the URL and try again.',
-                                        );
+                                        context.go('/login');
                                       }
+
                                       pedningReq.value = false;
                                     },
                                     child: Row(

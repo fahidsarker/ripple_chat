@@ -35,9 +35,9 @@ class AuthFormServerNotifier extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Consume(
-              provider: baseApiRouteProvider,
+              provider: apiConfigProvider,
               builder: (_, t) => Text(
-                t ?? 'No server connected',
+                t?.httpUrl ?? 'No server connected',
                 style: AppTypography.buttonLarge.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.c.success,

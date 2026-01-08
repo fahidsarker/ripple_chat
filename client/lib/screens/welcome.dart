@@ -137,7 +137,7 @@ class WelcomeScreen extends ConsumerWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 welcomeScreenShown.value = true;
-                                if (ref.read(baseApiRouteProvider) == null) {
+                                if (ref.read(apiConfigProvider) == null) {
                                   context.go('/connect-server');
                                 } else {
                                   context.go('/login');

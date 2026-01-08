@@ -17,7 +17,7 @@ class _InitialRedirectScreenState extends State<InitialRedirectScreen> {
       if (!welcomeScreenShown.value) {
         return context.go('/welcome');
       }
-      if (serverUriPref.value == null) {
+      if (serverConfPref.value == null) {
         return context.go('/connect-server');
       }
       return context.go('/login');
