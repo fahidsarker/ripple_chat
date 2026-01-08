@@ -30,6 +30,30 @@ router.get(
   })
 );
 
+router.get(
+  "/:cid",
+  apiHandler(async (req) => {
+    try {
+      const userId = getUser(req).userId;
+      const [chat] = await queryChats({
+        userId,
+        limit: 1,
+        chatId: req.params.cid!,
+        offset: 0,
+      });
+
+      if (!chat) {
+        return Res.error("Chat not found", 404);
+      }
+
+      return Res.json({ chat });
+    } catch (error) {
+      console.error("Get chats error:", error);
+      return Res.error("Internal server error");
+    }
+  })
+);
+
 // POST /chats - Create a new chat
 router.post(
   "/",

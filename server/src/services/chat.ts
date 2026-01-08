@@ -55,11 +55,13 @@ export const queryChats = async ({
   limit,
   offset,
   search,
+  chatId,
 }: {
   userId: string;
   limit: number;
   offset: number;
   search?: string;
+  chatId?: string;
 }) => {
   const chatSearchFilter = search
     ? or(
@@ -76,6 +78,7 @@ export const queryChats = async ({
           `
       )
     : undefined;
+  const chatIdFilter = chatId ? eq(chats.id, chatId) : undefined;
 
   return await db
     .select({
@@ -105,7 +108,7 @@ export const queryChats = async ({
 
     // Filter chats by membership
     .innerJoin(chatMembers, eq(chatMembers.chatId, chats.id))
-    .where(and(eq(chatMembers.userId, userId), chatSearchFilter))
+    .where(and(eq(chatMembers.userId, userId), chatSearchFilter, chatIdFilter))
 
     // LATERAL JOIN: latest message
     .leftJoin(

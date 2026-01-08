@@ -1,3 +1,5 @@
+import 'package:ripple_client/extensions/map.dart';
+
 class Chat {
   final String id;
   final String? title;
@@ -18,12 +20,12 @@ class Chat {
 
   factory Chat.fromJson(Map<String, dynamic> json) {
     return Chat(
-      id: json['id'],
-      title: json['title'],
-      isGroup: json['isGroup'],
-      lastMessageContent: json['lastMessageContent'],
-      lastMessageSenderName: json['lastMessageSenderName'],
-      lastMessageSenderId: json['lastMessageSenderId'],
+      id: json.get('id'),
+      title: json.get('title'),
+      isGroup: json.get('isGroup'),
+      lastMessageContent: json.get('lastMessageContent'),
+      lastMessageSenderName: json.get('lastMessageSenderName'),
+      lastMessageSenderId: json.get('lastMessageSenderId'),
     );
   }
 

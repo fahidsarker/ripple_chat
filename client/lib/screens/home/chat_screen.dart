@@ -23,7 +23,7 @@ class ChatScreen extends ConsumerWidget {
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: ChatList(key: const Key('chat_list')),
+                  child: ChatList(key: const PageStorageKey('chat_list')),
                 ),
               ),
             ),
@@ -37,9 +37,7 @@ class ChatScreen extends ConsumerWidget {
                 : context.isWide
                 ? 3
                 : 2,
-            child: Card(
-              child: Padding(padding: const EdgeInsets.all(16), child: child),
-            ),
+            child: Card(child: child),
           ),
       ],
     );

@@ -74,3 +74,11 @@ class ChatList extends _$ChatList {
         });
   }
 }
+
+@riverpod
+Future<Chat> chatDetail(Ref ref, {required String chatId}) async {
+  return await ref.api
+      .get<Map<String, dynamic>>(ApiGet.chatOf.path(chatId: chatId))
+      .mapSuccess((d) => Chat.fromJson(d['chat']))
+      .getOrThrow();
+}

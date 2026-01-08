@@ -72,6 +72,7 @@ class ChatListView extends ConsumerWidget {
     }
 
     return PaginatedListView(
+      key: PageStorageKey('chat_list_view'),
       itemCount: chats.length,
       hasMore: chatResNotifier.hasMore,
       isLoadingMore: chatResNotifier.isLoadingMore,

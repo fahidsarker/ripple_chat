@@ -5,6 +5,7 @@ import 'package:ripple_client/providers/message_provider.dart';
 import 'package:ripple_client/widgets/messaging/message_bubble.dart';
 import 'package:ripple_client/widgets/messaging/message_input_area.dart';
 import 'package:ripple_client/providers/state_provider.dart';
+import 'package:ripple_client/widgets/messaging/message_screen_heading.dart';
 
 final messageContentStateProvider = StateProvider.of<String>('');
 
@@ -15,7 +16,19 @@ class MessagingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Card(
+          elevation: 5,
+
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+          ),
+          child: MessageScreenHeading(chatId: chatId),
+        ),
         Expanded(child: MessageList(chatId: chatId)),
         MessageInputArea(chatId: chatId),
       ],
