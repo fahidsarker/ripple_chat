@@ -25,10 +25,10 @@ Ripple Chat addresses the need for a straightforward messaging solution without 
 - ✅ User authentication
 - ✅ Profile management
 - ✅ File Upload and Token-based access
+- ✅ Direct messages
 
 ### Planned
 
-- 🔄 Direct messages
 - 📝 Send attachments with messages
 - 📝 Real-time messaging with WebSockets
 - 📝 Message read receipts and typing indicators

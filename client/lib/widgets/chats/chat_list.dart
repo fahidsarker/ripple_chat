@@ -96,6 +96,7 @@ class ChatListView extends ConsumerWidget {
           ),
           selected: chats[i].id == selectedChatId,
           selectedColor: context.c.textPrimary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           selectedTileColor: context.c.textSecondary.wOpacity(0.1),
           onTap: () {
             context.go('/chat/${chats[i].id}');
