@@ -29,16 +29,16 @@ Ripple Chat addresses the need for a straightforward messaging solution without 
 
 ### Planned
 
-- 🏗️ Send attachments with messages
+- 🏗️ Send attachments (images, videos, files) with messages
+- 📝 View all Files sent by to to me
 - 📝 Real-time messaging with WebSockets
-- 📝 Message read receipts and typing indicators
+- 📝 Message read/delivered receipts and typing indicators
 - 📝 Group chats
 - 📝 User presence (online/offline status)
-- 📝 Media sharing (images, videos, files)
 - 📝 Responsive design for mobile and desktop
-- 📝 File thumbnail generation and optimisation for delivery
 - 📝 Audio and video calls (via LiveKit integration)
 - 📝 Push notifications
+- 📝 File thumbnail generation and optimisation for delivery
 - 📝 End-to-end encryption for secure communication
 
 ## Architecture
@@ -91,13 +91,17 @@ Create a `.env` file in the server directory with the following variables:
 
 ```env
 NODE_ENV=development
+
 SERVER_PORT=3000
 DATABASE_URL=postgresql://username:password@localhost:5432/ripple_chat
 SERVER_URL=http://localhost:3000
+# WS_URL=ws://localhost:3000 # Uncomment if using WebSocket server separately. No need to provide if using same server for WS.
 JWT_SECRET=your-jwt-secret-key
+
 LIVEKIT_API_KEY=your-livekit-api-key
 LIVEKIT_API_SECRET=your-livekit-api-secret
 LIVEKIT_WS_URL=ws://localhost:7880
+
 FILE_STORAGE_PATH=./temp/uploads
 ```
 
