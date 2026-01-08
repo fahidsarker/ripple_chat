@@ -6,11 +6,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:ripple_client/core/theme/app_typography.dart';
 import 'package:ripple_client/extensions/color.dart';
 import 'package:ripple_client/extensions/context.dart';
-import 'package:ripple_client/extensions/object.dart';
-import 'package:ripple_client/extensions/string.dart';
+import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/providers/chat_provider.dart';
 import 'package:ripple_client/providers/state_provider.dart';
 import 'package:ripple_client/widgets/paginated_list_view.dart';
+import 'package:ripple_client/widgets/users/user_avatar.dart';
 
 final _chatQueryState = StateProvider.of('');
 
@@ -51,6 +51,7 @@ class ChatListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.watch(authProvider);
     final selectedChatId = context.router.pathParameters['cid'];
     final query = ref.watch(_chatQueryState).toLowerCase();
     final provider = chatListProvider(search: query);
@@ -78,14 +79,18 @@ class ChatListView extends ConsumerWidget {
       isLoadingMore: chatResNotifier.isLoadingMore,
       onLoadMore: chatResNotifier.nextPage,
       itemBuilder: (_, i) {
+        final opponentMemberId = chats[i].opponentMemberId(auth?.user.id ?? '');
+
         return ListTile(
-          leading: CircleAvatar(
-            child: Text(
-              chats[i].title != null && chats[i].title!.isNotEmpty
-                  ? chats[i].title![0].toUpperCase()
-                  : 'U',
-            ),
-          ),
+          leading: opponentMemberId == null
+              ? CircleAvatar(
+                  child: Text(
+                    chats[i].title != null && chats[i].title!.isNotEmpty
+                        ? chats[i].title![0].toUpperCase()
+                        : 'U',
+                  ),
+                )
+              : UserAvatar(uid: opponentMemberId),
           title: Text(chats[i].title ?? 'User'),
           subtitle: Row(
             children: [

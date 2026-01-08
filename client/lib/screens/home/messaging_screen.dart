@@ -20,7 +20,6 @@ class MessagingScreen extends ConsumerWidget {
       children: [
         Card(
           elevation: 5,
-
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(16),
@@ -29,7 +28,9 @@ class MessagingScreen extends ConsumerWidget {
           ),
           child: MessageScreenHeading(chatId: chatId),
         ),
+        SizedBox(height: 8),
         Expanded(child: MessageList(chatId: chatId)),
+        SizedBox(height: 8),
         MessageInputArea(chatId: chatId),
       ],
     );
@@ -58,6 +59,11 @@ class MessageList extends ConsumerWidget {
         return MessageBubble(
           message: message,
           currentUserId: auth?.user.id ?? '',
+          isPreviousFromSameUser:
+              index > 0 && messages[index - 1].senderId == message.senderId,
+          isNextFromSameUser:
+              index < messages.length - 1 &&
+              messages[index + 1].senderId == message.senderId,
         );
       },
       itemCount: messages.length,

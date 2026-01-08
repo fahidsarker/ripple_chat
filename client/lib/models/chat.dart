@@ -1,5 +1,12 @@
 import 'package:ripple_client/extensions/map.dart';
 
+class ChatMember {
+  final String id;
+  final String name;
+
+  ChatMember({required this.id, required this.name});
+}
+
 class Chat {
   final String id;
   final String? title;
@@ -9,6 +16,15 @@ class Chat {
   final String? lastMessageSenderName;
   final String? lastMessageSenderId;
 
+  final List<ChatMember> members;
+
+  String? opponentMemberId(String uid) => isGroup
+      ? null
+      : members
+            .where((member) => member.id != uid)
+            .map((member) => member.id)
+            .firstOrNull;
+
   Chat({
     required this.id,
     required this.title,
@@ -16,6 +32,7 @@ class Chat {
     this.lastMessageContent,
     this.lastMessageSenderName,
     this.lastMessageSenderId,
+    required this.members,
   });
 
   factory Chat.fromJson(Map<String, dynamic> json) {
@@ -26,6 +43,9 @@ class Chat {
       lastMessageContent: json.get('lastMessageContent'),
       lastMessageSenderName: json.get('lastMessageSenderName'),
       lastMessageSenderId: json.get('lastMessageSenderId'),
+      members: (json.get<List<dynamic>?>('members') ?? [])
+          .map((e) => ChatMember(id: e['id'], name: e['name']))
+          .toList(),
     );
   }
 
@@ -37,6 +57,7 @@ class Chat {
       'lastMessageContent': lastMessageContent,
       'lastMessageSenderName': lastMessageSenderName,
       'lastMessageSenderId': lastMessageSenderId,
+      'members': members.map((e) => {'id': e.id, 'name': e.name}).toList(),
     };
   }
 

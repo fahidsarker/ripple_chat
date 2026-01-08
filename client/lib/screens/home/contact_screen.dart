@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:ripple_client/providers/users_provider.dart';
+import 'package:ripple_client/widgets/users/user_avatar.dart';
 
 class ContactScreen extends ConsumerWidget {
   const ContactScreen({super.key});
@@ -26,7 +27,10 @@ class ContactScreen extends ConsumerWidget {
                 children: [
                   for (var user in users)
                     ListTile(
-                      leading: const Icon(Icons.person),
+                      leading: UserAvatar(
+                        imgUrl: user.profilePhotoUrl,
+                        uid: user.id,
+                      ),
                       title: Text(user.name),
                       subtitle: Text(user.email),
                     ),

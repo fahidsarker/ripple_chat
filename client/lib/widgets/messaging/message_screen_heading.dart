@@ -3,7 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:ripple_client/core/theme/app_typography.dart';
+import 'package:ripple_client/providers/api_provider.dart';
+import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/providers/chat_provider.dart';
+import 'package:ripple_client/widgets/users/user_avatar.dart';
 
 class MessageScreenHeading extends ConsumerWidget {
   final String chatId;
@@ -38,6 +41,8 @@ class MessageScreenHeading extends ConsumerWidget {
 
   List<Widget> buildUi(BuildContext context, WidgetRef ref) {
     final detailRes = ref.watch(chatDetailProvider(chatId: chatId));
+    final apiConfig = ref.watch(apiConfigProvider);
+    final auth = ref.watch(authProvider);
     if (detailRes.isLoading) {
       return [Text('Loading...')];
     }
@@ -46,19 +51,31 @@ class MessageScreenHeading extends ConsumerWidget {
     }
     final chat = detailRes.value;
     if (chat != null) {
+      final opponentMemberId = chat.opponentMemberId(auth?.user.id ?? '');
       return [
-        CircleAvatar(
+        if (opponentMemberId != null)
+          UserAvatar(uid: opponentMemberId)
+        else
+          CircleAvatar(
+            child: Text(
+              chat.title != null && chat.title!.isNotEmpty
+                  ? chat.title![0].toUpperCase()
+                  : 'U',
+            ),
+          ),
+        SizedBox(width: 8),
+        Expanded(
           child: Text(
-            chat.title != null && chat.title!.isNotEmpty
-                ? chat.title![0].toUpperCase()
-                : 'U',
+            chat.title ?? 'Chat',
+            style: AppTypography.titleLarge,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-        SizedBox(width: 8),
-        Text(chat.title ?? 'Chat', style: AppTypography.titleLarge),
-        Spacer(),
-        IconButton(onPressed: () {}, icon: FaIcon(FontAwesomeIcons.phone)),
-        IconButton(onPressed: () {}, icon: FaIcon(FontAwesomeIcons.video)),
+        if (apiConfig?.allowsCalls ?? false) ...[
+          IconButton(onPressed: () {}, icon: FaIcon(FontAwesomeIcons.phone)),
+          IconButton(onPressed: () {}, icon: FaIcon(FontAwesomeIcons.video)),
+        ],
         IconButton(onPressed: () {}, icon: FaIcon(Icons.more_horiz)),
       ];
     }

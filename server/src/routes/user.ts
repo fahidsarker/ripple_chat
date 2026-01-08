@@ -1,10 +1,12 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { authRequired } from "../middleware/auth";
 import { apiHandler, queryParams } from "../core/api-handler";
 import { Res } from "../core/response";
-import { db, tables } from "../db";
+import { db } from "../db";
 import { ilike, or } from "drizzle-orm";
 import { users } from "../db/schema";
+import { getProfileOfUser } from "../services/profile";
+import { delay } from "../utils";
 
 const router = express.Router();
 
@@ -39,6 +41,16 @@ router.get(
       console.error("Get chats error:", error);
       return Res.error("Internal server error");
     }
+  })
+);
+
+router.get(
+  "/:uid",
+  apiHandler(async (req) => {
+    const { uid } = req.params;
+    // todo: ensure the user has permission to view this profile
+    const profile = await getProfileOfUser(uid);
+    return Res.json({ user: profile });
   })
 );
 

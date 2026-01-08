@@ -1,10 +1,12 @@
 String _messagesRoute({required String chatId}) =>
     '/api/chats/$chatId/messages';
 String _chatDetail({required String chatId}) => '/api/chats/$chatId';
+String _userProfile({required String userId}) => '/api/users/$userId';
 
 enum ApiGet<T> {
   chats('/api/chats'),
   users('/api/users'),
+  userOf(_userProfile),
   messages(_messagesRoute),
   chatOf(_chatDetail),
   profile('/api/profile');

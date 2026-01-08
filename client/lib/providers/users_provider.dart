@@ -1,4 +1,6 @@
+import 'package:resultx/resultx.dart';
 import 'package:ripple_client/core/api_paths.dart';
+import 'package:ripple_client/extensions/riverpod.dart';
 import 'package:ripple_client/models/user.dart';
 import 'package:ripple_client/providers/api_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -25,4 +27,12 @@ Future<List<User>> userList(
   return (res.getOrThrow()['users'] as List<dynamic>)
       .map((e) => User.fromJson(e as Map<String, dynamic>))
       .toList();
+}
+
+@Riverpod(keepAlive: true)
+Future<User> userDetail(Ref ref, {required String userId}) async {
+  return await ref.api
+      .get<Map<String, dynamic>>(ApiGet.userOf.path(userId: userId))
+      .mapSuccess((u) => User.fromJson(u['user']))
+      .getOrThrow();
 }
