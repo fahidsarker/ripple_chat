@@ -29,7 +29,7 @@ Ripple Chat addresses the need for a straightforward messaging solution without 
 
 ### Planned
 
-- 📝 Send attachments with messages
+- 🏗️ Send attachments with messages
 - 📝 Real-time messaging with WebSockets
 - 📝 Message read receipts and typing indicators
 - 📝 Group chats

@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:resultx/resultx.dart';
 import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/context.dart';
-import 'package:ripple_client/extensions/results.dart';
 import 'package:ripple_client/extensions/riverpod.dart';
 import 'package:ripple_client/widgets/profiles/profile_section.dart';
 

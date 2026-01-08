@@ -4,10 +4,7 @@ import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/providers/message_provider.dart';
 import 'package:ripple_client/widgets/messaging/message_bubble.dart';
 import 'package:ripple_client/widgets/messaging/message_input_area.dart';
-import 'package:ripple_client/providers/state_provider.dart';
 import 'package:ripple_client/widgets/messaging/message_screen_heading.dart';
-
-final messageContentStateProvider = StateProvider.of<String>('');
 
 class MessagingScreen extends ConsumerWidget {
   final String chatId;

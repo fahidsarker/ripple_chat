@@ -7,7 +7,7 @@ import 'package:ripple_client/extensions/color.dart';
 import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/screens/error_screen.dart';
-import 'package:ripple_client/utils.dart';
+import 'package:ripple_client/utils/utils.dart';
 
 Icon themeModeIcon(ThemeMode mode) {
   switch (mode) {

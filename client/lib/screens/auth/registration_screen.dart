@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/color.dart';
 import 'package:ripple_client/extensions/context.dart';
 import 'package:ripple_client/core/theme/app_typography.dart';
-import 'package:ripple_client/extensions/results.dart';
-import 'package:ripple_client/extensions/riverpod.dart';
 import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:ripple_client/widgets/signup_form.dart';
 

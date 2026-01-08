@@ -14,6 +14,26 @@ class Consume<StateT> extends ConsumerWidget {
   }
 }
 
+class ConsumeNotifier<T> extends StatelessWidget {
+  final ValueNotifier<T> notifier;
+  final Widget Function(BuildContext, T) builder;
+  const ConsumeNotifier({
+    super.key,
+    required this.notifier,
+    required this.builder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<T>(
+      valueListenable: notifier,
+      builder: (context, value, _) {
+        return builder(context, value);
+      },
+    );
+  }
+}
+
 class AsyncConsume<StateT> extends ConsumerWidget {
   final ProviderListenable<AsyncValue<StateT>> provider;
   final Widget Function(BuildContext, StateT) builder;
