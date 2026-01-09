@@ -14,6 +14,7 @@ import profileRoutes from "./routes/profile";
 import filesRouter from "./routes/files";
 
 import { globalErrorHandler } from "./middleware/global-error-handle";
+import { authRequired } from "./middleware/auth";
 
 const io = new Server(server, {
   cors: {
@@ -86,6 +87,15 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/files", filesRouter);
+
+// temporary client config route
+// think: How to securely send client config like API keys to client apps
+// todo
+app.get("/api/client-config", authRequired, (req, res) => {
+  return res.json({
+    GIPHY_KEY: env.GIPHY_API_KEY,
+  });
+});
 
 // 404 handler
 app.use("*", (req, res) => {

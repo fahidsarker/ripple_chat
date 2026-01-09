@@ -41,7 +41,7 @@ class MessageList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authProvider);
-    final messagesRes = ref.watch(messageListProvider(chatId: chatId));
+    final messagesRes = ref.watch(messagesProvider(chatId: chatId));
     if (messagesRes.isLoading) {
       return Center(child: CircularProgressIndicator());
     }

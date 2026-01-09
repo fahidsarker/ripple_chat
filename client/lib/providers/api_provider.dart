@@ -1,7 +1,10 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:resultx/resultx.dart';
 import 'package:ripple_client/core/api.dart';
+import 'package:ripple_client/extensions/riverpod.dart';
+import 'package:ripple_client/models/client_conf.dart';
 import 'package:ripple_client/models/server_conf.dart';
 import 'package:ripple_client/providers/auth_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -70,4 +73,14 @@ Dio dio(Ref ref, {String? authToken}) {
 @riverpod
 Api api(Ref ref) {
   return Api(ref.watch(dioProvider(authToken: ref.watch(authProvider)?.token)));
+}
+
+@Riverpod(keepAlive: true)
+Future<ClientConf?> clientConf(Ref ref) async {
+  return ref.api
+      .get<Map<String, dynamic>>('/api/client-config')
+      .mapSuccess((d) => ClientConf.fromJson(d))
+      .nullable()
+      .resolve(onError: (_) => null)
+      .data;
 }

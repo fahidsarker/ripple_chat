@@ -8,12 +8,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'message_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-class MessageList extends _$MessageList {
+class Messages extends _$Messages {
   int offset = 0;
   final ValueNotifier<bool> hasMore = ValueNotifier<bool>(true);
   final ValueNotifier<bool> isLoadingMore = ValueNotifier<bool>(false);
 
-  MessageList();
+  Messages();
 
   Future<List<Message>> fetchMessages(int offset) {
     return ref.api
@@ -63,5 +63,13 @@ class MessageList extends _$MessageList {
         .whenComplete(() {
           isLoadingMore.value = false;
         });
+  }
+
+  Future<bool> sendMessage({required String content}) async {
+    final res = await ref.api.post(
+      ApiPost.messages.path(chatId: chatId),
+      body: {'content': content}.toFormData(),
+    );
+    return res.isSuccess;
   }
 }

@@ -29,6 +29,7 @@ export const env = z
       .string()
       .refine((v) => v.startsWith("ws://") || v.startsWith("wss://"))
       .optional(),
+    GIPHY_API_KEY: z.string().min(1, "GIPHY_API_KEY is required").optional(),
     JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
     LIVEKIT_API_KEY: z.string().min(1, "LIVEKIT_API_KEY is required"),
     LIVEKIT_API_SECRET: z.string().min(1, "LIVEKIT_API_SECRET is required"),
