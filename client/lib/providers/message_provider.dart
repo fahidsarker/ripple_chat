@@ -31,6 +31,9 @@ class Messages extends _$Messages {
 
   void listenToNewMessages() {
     final socket = ref.watch(rippleSocketProvider);
+    ref.onDispose(() {
+      socket?.unSubscribeFromChatRoom(chatId);
+    });
     socket?.subscribeToChatRoom(chatId, (data) {
       final newMessage = Message.fromJson(data);
       state = AsyncValue.data([newMessage, ...state.value ?? []]);

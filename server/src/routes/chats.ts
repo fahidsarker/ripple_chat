@@ -3,12 +3,10 @@ import { authRequired } from "../middleware/auth";
 import { getUser } from "../services/auth";
 import { apiHandler, queryParams } from "../core/api-handler";
 import { Res } from "../core/response";
-import { db } from "../db";
-import { chatMembers, chats, messages, users } from "../db/schema";
-import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { CreateChatInput, createChatSchema } from "../validators";
 import messagesRouter from "./messages";
 import { createNewChat, queryChats } from "../services/chat";
+import { broadcastNewChat } from "../ws/broadcasters";
 
 const router = express.Router();
 
@@ -62,7 +60,24 @@ router.post(
       const validatedData = createChatSchema.parse(req.body);
       const createdBy = getUser(req).userId;
 
-      const newChat = await createNewChat(validatedData, createdBy);
+      const newChatRes = await createNewChat(validatedData, createdBy);
+      if (!newChatRes) {
+        return Res.error("Failed to create chat", 500);
+      }
+
+      const [newChat] = await queryChats({
+        userId: createdBy,
+        limit: 1,
+        chatId: newChatRes.id,
+        offset: 0,
+      });
+
+      if (!newChat) {
+        return Res.error("Chat not found after creation", 500);
+      }
+
+      broadcastNewChat(newChat);
+
       return Res.json(
         {
           message: "Chat created successfully",

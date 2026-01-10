@@ -3,6 +3,7 @@ import 'package:resultx/resultx.dart';
 import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/riverpod.dart';
 import 'package:ripple_client/models/chat.dart';
+import 'package:ripple_client/providers/socket_io_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'chat_provider.g.dart';
 
@@ -31,11 +32,25 @@ class ChatList extends _$ChatList {
 
   @override
   Future<List<Chat>> build({int pageSize = 20, String? search}) async {
+    listenToNewChats();
     final chats = await fetchChats(offset);
     if (chats.length < (pageSize)) {
       hasMore.value = false;
     }
     return chats;
+  }
+
+  void listenToNewChats() {
+    final socket = ref.watch(rippleSocketProvider);
+    socket?.subscribeToNewChatCreations((data) {
+      final newChat = Chat.fromJson(data);
+      state = AsyncValue.data([newChat, ...state.value ?? []]);
+    });
+  }
+
+  void listenToNewChatUpdates() {
+    final socket = ref.watch(rippleSocketProvider);
+    socket?.subscribeToChatUpdates((data) {});
   }
 
   Future<void> nextPage() {

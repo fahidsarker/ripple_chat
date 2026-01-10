@@ -1,9 +1,17 @@
-import { and, eq, ilike, inArray, or, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { db } from "../db";
 import { chatMembers, chats, users } from "../db/schema";
 import { CreateChatInput } from "../validators";
 import { Res } from "../core/response";
-import { cache, revalidateTag } from "../caching/cache";
+import { apiError } from "../core/api-error";
+
+export const getChatMembers = async (chatId: string) => {
+  return await db
+    .select({ id: users.id, name: users.name })
+    .from(chatMembers)
+    .innerJoin(users, eq(chatMembers.userId, users.id))
+    .where(eq(chatMembers.chatId, chatId));
+};
 
 export const createNewChat = async (
   data: CreateChatInput,
@@ -21,7 +29,7 @@ export const createNewChat = async (
     .where(inArray(users.id, allMemberIds));
 
   if (existingUsers.length !== allMemberIds.length) {
-    return Res.error("Some users do not exist", 400);
+    throw apiError(400, "One or more specified users do not exist");
   }
 
   // Create chat
@@ -32,7 +40,7 @@ export const createNewChat = async (
       isGroup,
       createdBy,
     })
-    .returning();
+    .returning({ id: chats.id });
 
   // Add members to chat
   const memberInserts = allMemberIds.map((userId) => ({
@@ -136,7 +144,7 @@ export const queryChats = async ({
       sql`true`
     )
 
-    .orderBy(sql`last_msg.created_at DESC NULLS LAST`)
+    .orderBy(sql`last_msg.created_at DESC NULLS LAST`, desc(chats.createdAt))
     .limit(limit)
     .offset(offset)
     .then((chats) =>

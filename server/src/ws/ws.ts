@@ -17,7 +17,6 @@ const startIo = (io: Server) => {
     socket.on("disconnect", () => {
       socket.data.user = undefined;
       for (const room of socket.rooms) {
-        console.log(`Leaving room: ${room}`);
         socket.leave(room);
       }
     });
@@ -66,6 +65,8 @@ const handleAuth = (socket: Socket, data: any) => {
   try {
     const user = authService.verifyToken(token);
     socket.data.user = user;
+    socket.join(user.userId);
+    console.log(`User ${user.userId} authenticated via WS`);
     socket.emit("auth:success", { message: "Authentication successful" });
   } catch (error) {
     socket.emit("auth:failure", { message: "Invalid token" });
