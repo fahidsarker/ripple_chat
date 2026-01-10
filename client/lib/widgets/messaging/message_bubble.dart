@@ -20,7 +20,7 @@ class MessageBubble extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSentByCurrentUser = message.senderId == currentUserId;
+    final isSentByCurrentUser = message.sender.id == currentUserId;
     const avatarSize = 18.0;
     const borderRadius = 12.0;
     return Padding(
@@ -31,7 +31,7 @@ class MessageBubble extends ConsumerWidget {
           if (isSentByCurrentUser) Spacer(flex: 1),
           if (!isSentByCurrentUser) ...[
             if (!isPreviousFromSameUser)
-              UserAvatar(uid: message.senderId, size: avatarSize)
+              UserAvatar(uid: message.sender.id, size: avatarSize)
             else
               SizedBox(width: avatarSize),
             SizedBox(width: 8),

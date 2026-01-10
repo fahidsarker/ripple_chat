@@ -57,10 +57,10 @@ class MessageList extends ConsumerWidget {
           message: message,
           currentUserId: auth?.user.id ?? '',
           isPreviousFromSameUser:
-              index > 0 && messages[index - 1].senderId == message.senderId,
+              index > 0 && messages[index - 1].sender.id == message.sender.id,
           isNextFromSameUser:
               index < messages.length - 1 &&
-              messages[index + 1].senderId == message.senderId,
+              messages[index + 1].sender.id == message.sender.id,
         );
       },
       itemCount: messages.length,

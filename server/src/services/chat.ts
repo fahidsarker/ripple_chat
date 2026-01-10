@@ -1,9 +1,9 @@
 import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { db } from "../db";
-import { chatMembers, chats, users } from "../db/schema";
+import { chatMembers, chats, messages, users } from "../db/schema";
 import { CreateChatInput } from "../validators";
-import { Res } from "../core/response";
 import { apiError } from "../core/api-error";
+import { ResChat } from "../types/responses";
 
 export const getChatMembers = async (chatId: string) => {
   return await db
@@ -70,7 +70,7 @@ export const queryChats = async ({
   offset: number;
   search?: string;
   chatId?: string;
-}) => {
+}): Promise<ResChat[]> => {
   const chatSearchFilter = search
     ? or(
         ilike(chats.title, `%${search}%`),
@@ -93,14 +93,29 @@ export const queryChats = async ({
       id: chats.id,
       title: chats.title,
       isGroup: chats.isGroup,
+      createdBy: chats.createdBy,
       createdAt: chats.createdAt,
 
       // Last message fields
       lastMessageId: sql<string>`last_msg.id`,
-      lastMessageContent: sql<string>`last_msg.content`,
+      lastMessageChatId: sql<string>`last_msg.chat_id`,
       lastMessageSenderId: sql<string>`last_msg.sender_id`,
-      lastMessageSenderName: sql<string>`last_sender.name`,
+      lastMessageContent: sql<string>`last_msg.content`,
       lastMessageCreatedAt: sql<string>`last_msg.created_at`,
+      lastMessageSenderName: sql<string>`last_sender.name`,
+
+      // Last message attachments
+      lastMessageAttachments: sql<
+        Array<{ id: string; ext: string; originalName: string }>
+      >`
+          (
+            SELECT json_agg(json_build_object('id', f.id, 'ext', f.ext, 'originalName', f.original_name))
+            FROM files f
+            WHERE f.parent_id = last_msg.id
+              AND f.parent_type = 'message'
+              AND f.deleted = false
+          )
+        `,
 
       // Chat members list
       members: sql<Array<{ id: string; name: string }>>`
@@ -156,10 +171,67 @@ export const queryChats = async ({
             .map((m) => m.name)
             .join(", ");
         }
+
+        // Build lastMessage object if message exists
+        const lastMessage = chat.lastMessageId
+          ? {
+              id: chat.lastMessageId,
+              chatId: chat.lastMessageChatId,
+              senderId: chat.lastMessageSenderId,
+              content: chat.lastMessageContent,
+              createdAt: new Date(chat.lastMessageCreatedAt),
+              senderName: chat.lastMessageSenderName,
+              attachments: chat.lastMessageAttachments || [],
+            }
+          : undefined;
+
         return {
-          ...chat,
+          id: chat.id,
           title,
+          isGroup: chat.isGroup,
+          createdBy: chat.createdBy,
+          createdAt: chat.createdAt,
+          lastMessage,
+          members: chat.members,
         };
       })
     );
 };
+
+//   const chatsRes = await db.query.chats.findMany({
+//     orderBy: [desc(messages.createdAt), desc(chats.createdAt)],
+//     with: {
+//       members: {
+//         columns: { id: true },
+//         with: {
+//           user: { columns: { name: true } },
+//         },
+//       },
+
+//       messages: {
+//         orderBy: [desc(messages.createdAt)],
+//         limit: 1,
+//         with: {
+//           sender: { columns: { name: true } },
+//           attachments: { columns: { id: true, ext: true } },
+//         },
+//       },
+//     },
+//   });
+
+//   return chatsRes.map((chatRow) => {
+//     const { members, messages, ...chat } = chatRow;
+//     return {
+//       lastMessage: messages.map((mgsRow) => {
+//         const { attachments, sender, ...mgs } = mgsRow;
+//         return {
+//           ...mgs,
+//           senderName: sender.name,
+//           attachments: attachments,
+//         };
+//       })[0],
+//       ...chat,
+//       members: members.map((m) => ({ id: m.id, name: m.user.name })),
+//     };
+//   });
+// };

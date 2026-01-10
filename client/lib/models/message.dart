@@ -3,7 +3,7 @@ import 'package:ripple_client/extensions/map.dart';
 class Message {
   final String id;
   final DateTime createdAt;
-  final String senderId;
+  final String chatId;
   final String content;
   final MessageSender sender;
   final List<MessageAttachment> attachments;
@@ -11,7 +11,7 @@ class Message {
   Message({
     required this.id,
     required this.createdAt,
-    required this.senderId,
+    required this.chatId,
     required this.content,
     required this.sender,
     required this.attachments,
@@ -21,9 +21,12 @@ class Message {
     return Message(
       id: json.get('id'),
       createdAt: DateTime.parse(json.get('createdAt')),
-      senderId: json.get('senderId'),
+      chatId: json.get('chatId'),
+      sender: MessageSender(
+        id: json.get('senderId'),
+        name: json.get('senderName'),
+      ),
       content: json.get('content'),
-      sender: MessageSender.fromJson(json.get<Map<String, dynamic>>('sender')),
       attachments: (json.get<List<dynamic>>(
         'attachments',
       )).map((e) => MessageAttachment.fromJson(e)).toList(),
@@ -34,9 +37,10 @@ class Message {
     return {
       'id': id,
       'createdAt': createdAt.toIso8601String(),
-      'senderId': senderId,
+      'chatId': chatId,
+      'senderId': sender.id,
+      'senderName': sender.name,
       'content': content,
-      'sender': sender.toJson(),
       'attachments': attachments.map((e) => e.toJson()).toList(),
     };
   }
@@ -59,13 +63,11 @@ class MessageSender {
 
 class MessageAttachment {
   final String id;
-  final String relativePath;
   final String originalName;
   final String ext;
 
   MessageAttachment({
     required this.id,
-    required this.relativePath,
     required this.originalName,
     required this.ext,
   });
@@ -73,18 +75,12 @@ class MessageAttachment {
   factory MessageAttachment.fromJson(Map<String, dynamic> json) {
     return MessageAttachment(
       id: json.get('id'),
-      relativePath: json.get('relativePath'),
       originalName: json.get('originalName'),
       ext: json.get('ext'),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'relativePath': relativePath,
-      'originalName': originalName,
-      'ext': ext,
-    };
+    return {'id': id, 'originalName': originalName, 'ext': ext};
   }
 }

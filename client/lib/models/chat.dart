@@ -1,4 +1,5 @@
 import 'package:ripple_client/extensions/map.dart';
+import 'package:ripple_client/models/message.dart';
 
 class ChatMember {
   final String id;
@@ -12,9 +13,7 @@ class Chat {
   final String? title;
   final bool isGroup;
 
-  final String? lastMessageContent;
-  final String? lastMessageSenderName;
-  final String? lastMessageSenderId;
+  final Message? lastMessage;
 
   final List<ChatMember> members;
 
@@ -29,9 +28,7 @@ class Chat {
     required this.id,
     required this.title,
     required this.isGroup,
-    this.lastMessageContent,
-    this.lastMessageSenderName,
-    this.lastMessageSenderId,
+    required this.lastMessage,
     required this.members,
   });
 
@@ -40,9 +37,10 @@ class Chat {
       id: json.get('id'),
       title: json.get('title'),
       isGroup: json.get('isGroup'),
-      lastMessageContent: json.get('lastMessageContent'),
-      lastMessageSenderName: json.get('lastMessageSenderName'),
-      lastMessageSenderId: json.get('lastMessageSenderId'),
+      lastMessage: json.getAndMap<Map<String, dynamic>?, Message?>(
+        'lastMessage',
+        (json) => json != null ? Message.fromJson(json) : null,
+      ),
       members: (json.get<List<dynamic>?>('members') ?? [])
           .map((e) => ChatMember(id: e['id'], name: e['name']))
           .toList(),
@@ -54,17 +52,15 @@ class Chat {
       'id': id,
       'title': title,
       'isGroup': isGroup,
-      'lastMessageContent': lastMessageContent,
-      'lastMessageSenderName': lastMessageSenderName,
-      'lastMessageSenderId': lastMessageSenderId,
+      'lastMessage': lastMessage?.toJson(),
       'members': members.map((e) => {'id': e.id, 'name': e.name}).toList(),
     };
   }
 
   String? get lastMessageSenderContent {
-    if (lastMessageSenderName != null && lastMessageContent != null) {
-      return '${lastMessageSenderName!}: ${lastMessageContent!}';
+    if (lastMessage == null) {
+      return null;
     }
-    return lastMessageContent;
+    return "${lastMessage!.sender.name}: ${lastMessage!.content}";
   }
 }

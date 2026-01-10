@@ -16,6 +16,7 @@ import filesRouter from "./routes/files";
 import { globalErrorHandler } from "./middleware/global-error-handle";
 import { authRequired } from "./middleware/auth";
 import { initWSIO } from "./ws/ws";
+import { queryChats } from "./services/chat";
 
 initWSIO(
   new Server(server, {
@@ -50,6 +51,16 @@ app.use((req, res, next) => {
     // );
   });
   next();
+});
+
+app.get("/", async (req, res) => {
+  res.json({
+    chat: await queryChats({
+      userId: "bfb22f06-8d34-49ea-8402-21e7380abd92",
+      limit: 10,
+      offset: 0,
+    }),
+  });
 });
 
 // Health check endpoint

@@ -1,5 +1,10 @@
-import { queryChats } from "../services/chat";
-import { getMessages } from "../services/message";
+import { ChatRow, MessageRow } from "./db-types";
 
-export type ResMessage = Awaited<ReturnType<typeof getMessages>>[number];
-export type ResChat = Awaited<ReturnType<typeof queryChats>>[number];
+export type ResMessage = MessageRow & {
+  senderName: string;
+  attachments: { id: string; ext: string; originalName: string }[];
+};
+export type ResChat = ChatRow & {
+  lastMessage?: ResMessage;
+  members: { id: string; name: string }[];
+};
