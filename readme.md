@@ -29,8 +29,8 @@ Ripple Chat addresses the need for a straightforward messaging solution without 
 
 ### Planned
 
-- 🏗️ Send attachments (images, videos, files) with messages
-- 📝 Real-time messaging with WebSockets
+- 🏗️ Real-time messaging with WebSockets
+- 📝 Send attachments (images, videos, files) with messages
 - 📝 View all Files sent by to to me
 - 📝 Message read/delivered receipts and typing indicators
 - 📝 Group chats

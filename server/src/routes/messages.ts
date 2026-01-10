@@ -1,15 +1,14 @@
-import express, { Request, Response } from "express";
+import express, { Request } from "express";
 import { authRequired } from "../middleware/auth";
 import { getUser } from "../services/auth";
 import { apiHandler, queryParams } from "../core/api-handler";
 import { Res } from "../core/response";
-import { db } from "../db";
-import { messages, files } from "../db/schema";
-import { and, desc, eq, ilike } from "drizzle-orm";
 import { hasUserAccessToChat } from "../services/chat";
 import { upload } from "../core/multer";
 import { sendMessageSchema } from "../validators";
-import { createNewMessage } from "../services/message";
+import { createNewMessage, getMessages } from "../services/message";
+import { broadcastNewMessage } from "../ws/broadcasters";
+import { ResMessage } from "../types/responses";
 
 const router = express.Router({ mergeParams: true });
 router.use(authRequired);
@@ -25,29 +24,11 @@ router.get(
     }
 
     const { limit, offset, search } = queryParams(req);
-    const chatMessages = await db.query.messages.findMany({
-      where: and(
-        eq(messages.chatId, chatId),
-        search ? ilike(messages.content, `%${search}%`) : undefined
-      ),
-      with: {
-        sender: {
-          columns: { id: true, name: true },
-        },
-        attachments: {
-          where: and(eq(files.parentType, "message")),
-          columns: {
-            id: true,
-            originalName: true,
-            ext: true,
-            relativePath: true,
-          },
-        },
-      },
-      orderBy: [desc(messages.createdAt)],
+    const chatMessages = (await getMessages(chatId, {
       limit,
       offset,
-    });
+      search,
+    })) satisfies ResMessage[];
 
     return Res.json({ messages: chatMessages });
   })
@@ -62,13 +43,29 @@ router.post(
       return Res.error("Invalid input", 400);
     }
 
-    const message = await createNewMessage({
+    const insertedMessage = await createNewMessage({
       ...body.data,
       chatId: req.params.cid,
       userId: getUser(req).userId,
     });
+
+    if (!insertedMessage) {
+      return Res.error("Failed to send message", 500);
+    }
+
+    const [newMessage] = await getMessages(req.params.cid, {
+      limit: 1,
+      offset: 0,
+      messageId: insertedMessage.id,
+    });
+
+    if (!newMessage) {
+      return Res.error("Failed to retrieve message", 500);
+    }
+
+    broadcastNewMessage(req.params.cid, newMessage);
     return Res.json({
-      message,
+      message: newMessage,
     });
   })
 );

@@ -4,6 +4,7 @@ import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/map.dart';
 import 'package:ripple_client/extensions/riverpod.dart';
 import 'package:ripple_client/models/message.dart';
+import 'package:ripple_client/providers/socket_io_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'message_provider.g.dart';
 
@@ -12,8 +13,6 @@ class Messages extends _$Messages {
   int offset = 0;
   final ValueNotifier<bool> hasMore = ValueNotifier<bool>(true);
   final ValueNotifier<bool> isLoadingMore = ValueNotifier<bool>(false);
-
-  Messages();
 
   Future<List<Message>> fetchMessages(int offset) {
     return ref.api
@@ -30,12 +29,21 @@ class Messages extends _$Messages {
         .getOrThrow();
   }
 
+  void listenToNewMessages() {
+    final socket = ref.watch(rippleSocketProvider);
+    socket?.subscribeToChatRoom(chatId, (data) {
+      final newMessage = Message.fromJson(data);
+      state = AsyncValue.data([newMessage, ...state.value ?? []]);
+    });
+  }
+
   @override
   Future<List<Message>> build({
     int pageSize = 20,
     String? search,
     required String chatId,
   }) async {
+    listenToNewMessages();
     final messages = await fetchMessages(offset);
     if (messages.length < (pageSize)) {
       hasMore.value = false;

@@ -15,13 +15,16 @@ import filesRouter from "./routes/files";
 
 import { globalErrorHandler } from "./middleware/global-error-handle";
 import { authRequired } from "./middleware/auth";
+import { initWSIO } from "./ws/ws";
 
-const io = new Server(server, {
-  cors: {
-    origin: "*", // Configure later appropriately for production
-    methods: ["GET", "POST"],
-  },
-});
+initWSIO(
+  new Server(server, {
+    cors: {
+      origin: "*", // Configure later appropriately for production
+      methods: ["GET", "POST"],
+    },
+  })
+);
 
 const PORT = env.SERVER_PORT || 8080;
 
@@ -34,17 +37,17 @@ app.use(express.urlencoded({ extended: true }));
 // Custom logging middleware
 app.use((req, res, next) => {
   res.on("finish", () => {
-    console.log(
-      `${new Date().toLocaleString(undefined, {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      })}\t${req.method}\t${req.originalUrl}\t${res.statusCode}`
-    );
+    // console.log(
+    //   `${new Date().toLocaleString(undefined, {
+    //     year: "numeric",
+    //     month: "2-digit",
+    //     day: "2-digit",
+    //     hour: "2-digit",
+    //     minute: "2-digit",
+    //     second: "2-digit",
+    //     hour12: false,
+    //   })}\t${req.method}\t${req.originalUrl}\t${res.statusCode}`
+    // );
   });
   next();
 });

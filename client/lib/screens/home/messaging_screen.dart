@@ -6,12 +6,12 @@ import 'package:ripple_client/widgets/messaging/message_bubble.dart';
 import 'package:ripple_client/widgets/messaging/message_input_area.dart';
 import 'package:ripple_client/widgets/messaging/message_screen_heading.dart';
 
-class MessagingScreen extends ConsumerWidget {
+class MessagingScreen extends StatelessWidget {
   final String chatId;
   const MessagingScreen({super.key, required this.chatId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
