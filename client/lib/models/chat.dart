@@ -17,12 +17,20 @@ class Chat {
 
   final List<ChatMember> members;
 
-  String? opponentMemberId(String uid) => isGroup
-      ? null
-      : members
-            .where((member) => member.id != uid)
-            .map((member) => member.id)
-            .firstOrNull;
+  ChatMember? opponentMember(String uid) =>
+      isGroup ? null : members.where((member) => member.id != uid).firstOrNull;
+
+  String validTitle(String currentUserId) {
+    if (title != null && title!.isNotEmpty) {
+      return title!;
+    }
+    if (isGroup) {
+      return "Group Chat";
+    } else {
+      final opponent = opponentMember(currentUserId);
+      return opponent?.name ?? "User";
+    }
+  }
 
   Chat({
     required this.id,
@@ -55,6 +63,22 @@ class Chat {
       'lastMessage': lastMessage?.toJson(),
       'members': members.map((e) => {'id': e.id, 'name': e.name}).toList(),
     };
+  }
+
+  Chat copyWith({
+    String? id,
+    String? title,
+    bool? isGroup,
+    Message? lastMessage,
+    List<ChatMember>? members,
+  }) {
+    return Chat(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      isGroup: isGroup ?? this.isGroup,
+      lastMessage: lastMessage ?? this.lastMessage,
+      members: members ?? this.members,
+    );
   }
 
   String? get lastMessageSenderContent {

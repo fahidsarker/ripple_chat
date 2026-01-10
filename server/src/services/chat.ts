@@ -4,14 +4,21 @@ import { chatMembers, chats, messages, users } from "../db/schema";
 import { CreateChatInput } from "../validators";
 import { apiError } from "../core/api-error";
 import { ResChat } from "../types/responses";
+import { cache } from "../caching/cache";
 
-export const getChatMembers = async (chatId: string) => {
-  return await db
-    .select({ id: users.id, name: users.name })
-    .from(chatMembers)
-    .innerJoin(users, eq(chatMembers.userId, users.id))
-    .where(eq(chatMembers.chatId, chatId));
-};
+export const getChatMembers = cache(
+  async (chatId: string) => {
+    return await db
+      .select({ id: users.id, name: users.name })
+      .from(chatMembers)
+      .innerJoin(users, eq(chatMembers.userId, users.id))
+      .where(eq(chatMembers.chatId, chatId));
+  },
+  {
+    ttl: 5 * 60, // Cache for 5 minutes
+    tags: (chatId: string) => [chatId],
+  }
+);
 
 export const createNewChat = async (
   data: CreateChatInput,
@@ -164,14 +171,6 @@ export const queryChats = async ({
     .offset(offset)
     .then((chats) =>
       chats.map((chat) => {
-        let title = chat.title;
-        if (!chat.title) {
-          title = chat.members
-            .filter((m) => m.id !== userId)
-            .map((m) => m.name)
-            .join(", ");
-        }
-
         // Build lastMessage object if message exists
         const lastMessage = chat.lastMessageId
           ? {
@@ -187,7 +186,7 @@ export const queryChats = async ({
 
         return {
           id: chat.id,
-          title,
+          title: chat.title,
           isGroup: chat.isGroup,
           createdBy: chat.createdBy,
           createdAt: chat.createdAt,

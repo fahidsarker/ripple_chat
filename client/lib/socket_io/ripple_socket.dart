@@ -34,6 +34,6 @@ class RippleSocket {
   }
 
   void subscribeToChatUpdates(Function(Map<String, dynamic>) onMessage) {
-    subscribe<Map<String, dynamic>>('chat-list:chat-updates', onMessage);
+    subscribe<Map<String, dynamic>>('chat-list:update-last-message', onMessage);
   }
 }

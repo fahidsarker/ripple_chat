@@ -51,22 +51,25 @@ class MessageScreenHeading extends ConsumerWidget {
     }
     final chat = detailRes.value;
     if (chat != null) {
-      final opponentMemberId = chat.opponentMemberId(auth?.user.id ?? '');
+      final opponentMember = chat.opponentMember(auth?.user.id ?? '');
       return [
-        if (opponentMemberId != null)
-          UserAvatar(uid: opponentMemberId)
+        if (opponentMember != null)
+          UserAvatar(uid: opponentMember.id)
         else
           CircleAvatar(
             child: Text(
-              chat.title != null && chat.title!.isNotEmpty
-                  ? chat.title![0].toUpperCase()
-                  : 'U',
+              chat
+                      .validTitle(auth?.user.id ?? '')
+                      .characters
+                      .firstOrNull
+                      ?.toUpperCase() ??
+                  '?',
             ),
           ),
         SizedBox(width: 8),
         Expanded(
           child: Text(
-            chat.title ?? 'Chat',
+            chat.validTitle(auth?.user.id ?? ''),
             style: AppTypography.titleLarge,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

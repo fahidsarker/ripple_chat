@@ -38,17 +38,17 @@ app.use(express.urlencoded({ extended: true }));
 // Custom logging middleware
 app.use((req, res, next) => {
   res.on("finish", () => {
-    // console.log(
-    //   `${new Date().toLocaleString(undefined, {
-    //     year: "numeric",
-    //     month: "2-digit",
-    //     day: "2-digit",
-    //     hour: "2-digit",
-    //     minute: "2-digit",
-    //     second: "2-digit",
-    //     hour12: false,
-    //   })}\t${req.method}\t${req.originalUrl}\t${res.statusCode}`
-    // );
+    console.log(
+      `${new Date().toLocaleString(undefined, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      })}\t${req.method}\t${req.originalUrl}\t${res.statusCode}`
+    );
   });
   next();
 });

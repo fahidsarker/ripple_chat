@@ -3,6 +3,7 @@ import 'package:resultx/resultx.dart';
 import 'package:ripple_client/core/api_paths.dart';
 import 'package:ripple_client/extensions/riverpod.dart';
 import 'package:ripple_client/models/chat.dart';
+import 'package:ripple_client/models/message.dart';
 import 'package:ripple_client/providers/socket_io_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'chat_provider.g.dart';
@@ -33,6 +34,7 @@ class ChatList extends _$ChatList {
   @override
   Future<List<Chat>> build({int pageSize = 20, String? search}) async {
     listenToNewChats();
+    listenToNewChatUpdates();
     final chats = await fetchChats(offset);
     if (chats.length < (pageSize)) {
       hasMore.value = false;
@@ -50,7 +52,29 @@ class ChatList extends _$ChatList {
 
   void listenToNewChatUpdates() {
     final socket = ref.watch(rippleSocketProvider);
-    socket?.subscribeToChatUpdates((data) {});
+    socket?.subscribeToChatUpdates((data) async {
+      try {
+        final lastmessage = Message.fromJson(data);
+        final chatId = lastmessage.chatId;
+        final currentChats = state.value ?? [];
+        final chatIndex = currentChats.indexWhere((chat) => chat.id == chatId);
+        if (chatIndex != -1) {
+          final chat = currentChats.removeAt(chatIndex);
+          final updatedChat = chat.copyWith(lastMessage: lastmessage);
+          state = AsyncValue.data([updatedChat, ...currentChats]);
+        } else {
+          final fetchedChat = await ref.read(
+            chatDetailProvider(chatId: chatId).future,
+          );
+          state = AsyncValue.data([
+            fetchedChat.copyWith(lastMessage: lastmessage),
+            ...currentChats,
+          ]);
+        }
+      } catch (e) {
+        // Handle error if necessary
+      }
+    });
   }
 
   Future<void> nextPage() {

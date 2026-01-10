@@ -28,7 +28,7 @@ class MessagingScreen extends StatelessWidget {
         SizedBox(height: 8),
         Expanded(child: MessageList(chatId: chatId)),
         SizedBox(height: 8),
-        MessageInputArea(chatId: chatId),
+        MessageInputArea(chatId: chatId, key: ValueKey(chatId)),
       ],
     );
   }

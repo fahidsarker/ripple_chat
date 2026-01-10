@@ -79,19 +79,22 @@ class ChatListView extends ConsumerWidget {
       isLoadingMore: chatResNotifier.isLoadingMore,
       onLoadMore: chatResNotifier.nextPage,
       itemBuilder: (_, i) {
-        final opponentMemberId = chats[i].opponentMemberId(auth?.user.id ?? '');
+        final opponentMember = chats[i].opponentMember(auth?.user.id ?? '');
 
         return ListTile(
-          leading: opponentMemberId == null
+          leading: opponentMember == null
               ? CircleAvatar(
                   child: Text(
-                    chats[i].title != null && chats[i].title!.isNotEmpty
-                        ? chats[i].title![0].toUpperCase()
-                        : 'U',
+                    chats[i]
+                            .validTitle(auth?.user.id ?? '')
+                            .characters
+                            .firstOrNull
+                            ?.toUpperCase() ??
+                        '?',
                   ),
                 )
-              : UserAvatar(uid: opponentMemberId),
-          title: Text(chats[i].title ?? 'User'),
+              : UserAvatar(uid: opponentMember.id),
+          title: Text(chats[i].validTitle(auth?.user.id ?? '')),
           subtitle: Row(
             children: [
               Expanded(
